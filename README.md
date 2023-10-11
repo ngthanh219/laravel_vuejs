@@ -4,6 +4,7 @@
 
 2. Laravel 9
 ```sh
+- composer require laravel/passport -W
 - composer require aws/aws-sdk-php -W
 - composer require league/flysystem-aws-s3-v3 -W
 ```
@@ -18,6 +19,9 @@
 - npm install vue@next vue-loader@next
 - npm install @vitejs/plugin-vue
 - npm install vue-router
+- npm install sass-loader
+- npm install vuex
+- npm install vuex-persistedstate
 - npm run dev
 ```
 
@@ -63,10 +67,10 @@ php artisan serve
 9. Start npm
 - Development
 ```sh
-npm run dev
+npm run watch
 ```
 
 - Production
 ```sh
-npm run build
+npm run dev
 ```

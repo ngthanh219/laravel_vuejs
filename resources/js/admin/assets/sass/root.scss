@@ -1,0 +1,260 @@
+body {
+    overflow-x: hidden;
+}
+
+.card-body.data-table {
+    height: 600px;
+}
+
+.data-filter {
+    width: 120px;
+    margin-right: 10px;
+    align-items: center;
+
+    .label {
+        margin-right: 5px;
+    }
+
+    .form-control {
+        border-radius: 4px !important;
+    }
+}
+
+.btn {
+    padding: 0.25rem 0.5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+.data-filter.deleted {
+    width: 150px;
+}
+
+.data-filter.page {
+    width: 100px;
+    
+    .form-control {
+        text-align: center;
+    }
+}
+
+.btn-loading {
+    position: relative;
+    height: 38px;
+
+    .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.notification-dialog {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999999999999;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.oblique {
+    font-style: oblique;
+}
+
+.table-hover tbody tr.active {
+    color: #212529;
+    background-color: rgba(0,0,0,.075);
+}
+
+.table-action {
+    width: 50px;
+    // height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex: none;
+
+    .action-btn {
+        width: 27px;
+        height: 27px;
+        border-radius: 100%;
+        border: 1px solid #EEF5FF;
+        background-color: #eef5ff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .dot {
+            width: 2px;
+            height: 2px;
+            border: 1px solid rgba(102, 102, 102, 0.7);
+            border-radius: 100%;
+            background-color: rgba(102, 102, 102, 0.7);
+            margin-bottom: 2px;
+        }
+    }
+
+    .action-btn:hover {
+        background-color: #D9DEE5;
+    }
+
+    .action-detail {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid #E2E2E2;
+        border-radius: 4px;
+        background-color: white;
+        position: absolute;
+        right: 7px;
+        top: 25px;
+        z-index: 1;
+
+        .action-detail-btn {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666666;
+            line-height: 35px;
+            padding: 0 10px;
+            cursor: pointer;
+
+            i {
+                margin-right: 10px;
+                width: 20px;
+            }
+        }
+
+        .action-detail-btn.disabled {
+            opacity: 0.4;
+            background: #EAEAEA;
+            cursor: not-allowed;
+        }
+
+        .action-detail-btn:hover {
+            background: #EAEAEA;
+        }
+    }
+
+    .action-detail::before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 0;
+        height: 0;
+        border: 7px solid transparent;
+        border-bottom-color: white;
+        z-index: 2;
+        top: -14px;
+        right: 10px;
+    }
+
+    .action-detail::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 0;
+        height: 0;
+        border: 7px solid transparent;
+        border-bottom-color: #E2E2E2;
+        z-index: 1;
+        top: -15px;
+        right: 10px;
+    }
+}
+
+.table-action:hover .action-detail {
+    display: flex;
+}
+
+.page-link.disabled {
+    pointer-events: none;
+    opacity: .4;
+
+    i {
+        color: black;
+    }
+}
+
+.page-component {
+    position: relative;
+
+    .popup-component {
+        // position: absolute;
+        // top: 0px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 99999999;
+        background: hsla(0, 0%, 8%, 0.5);
+        // transform: translateX(100%);
+        // transition: .4s all ease;
+
+        .pc-form {
+            // position: absolute;
+            // top: 60px;
+            // right: 0;
+            height: 100%;
+            width: 100%;
+            transform: translateY(20%);
+            transition: 0.2s all ease;
+            opacity: 0;
+
+            .content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                overflow: auto;
+                
+                .container-fluid {
+                    height: 92%;
+                }
+            }
+
+            .card-body {
+                // height: 590px;
+                // overflow-y: auto;
+
+                .form-preview-image {
+                    width: 50%;
+                }
+
+                .input-group {
+                    .disabled {
+                        opacity: 0.4;
+                        background: #EAEAEA;
+                        cursor: not-allowed;
+                    }
+                }
+            }
+
+            .modal-list {
+                background: white;
+                border-radius: 3px;
+            }
+        }
+
+        .pc-form.transition-active {
+            transform: translateX(0%);
+            opacity: 1;
+        }
+    }
+
+    .popup-component.transition-active {
+        background: hsla(0, 0%, 8%, 0);
+    }
+}
