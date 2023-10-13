@@ -3,8 +3,9 @@ import router from './router/index.js';
 import store from './store';
 import env from '../env.js';
 import App from './App.vue';
+import messages from '../lang/messages.js';
 import helper from '../modules/helper.js';
 import appInstance from '../modules/main.js';
 
-helper.init(store, router);
+helper.init(store, router, messages, env);
 appInstance(env, router, App, store, helper);

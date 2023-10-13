@@ -22,14 +22,14 @@
                     class="form-control" 
                     v-model="query.page" 
                     @keypress="this.$helper.isNumber($event)"
-                    @keyup.enter="filter"
+                    @keyup.enter="pageFilter"
                     
                 />
                 <!-- @blur="filter" -->
             </div>
             <div class="input-group input-group-sm data-filter">
                 <div class="label">Hiển thị: </div>
-                <select class="form-control" v-model="query.limit" @change="filter">
+                <select class="form-control" v-model="query.limit" @change="limitFilter">
                     <option value="15">15</option>
                     <option value="30">30</option>
                     <option value="50">50</option>
@@ -76,12 +76,6 @@
             getData: Function
         },
         methods: {
-            filter(e) {
-                e.preventDefault();
-
-                this.filterDataTable();
-            },
-
             trashedFilter(e) {
                 e.preventDefault();
 
@@ -89,17 +83,22 @@
                 this.filterDataTable();
             },
 
+            pageFilter(e) {
+                e.preventDefault();
+
+                this.filterDataTable();
+            },
+
+            limitFilter(e) {
+                e.preventDefault();
+
+                this.query.page = 1;
+                this.filterDataTable();
+            },
+
             filterDataTable() {
+                this.$helper.setQueryPage(this.query, this.dataList);
                 this.$helper.pushQueryUrl(this.query);
-
-                if (this.query.page >= this.dataList.total_page) {
-                    this.query.page = this.dataList.total_page
-                }
-
-                if (this.query.page == 0) {
-                    this.query.page = 1;
-                }
-
                 this.getData();
             },
 

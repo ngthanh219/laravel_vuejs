@@ -62,7 +62,7 @@ class UserService extends BaseService
         }
     }
 
-    public function create($request)
+    public function store($request)
     {
         try {
             $existEmail = $this->user->where('email', $request->email)->withTrashed()->first();
@@ -146,7 +146,7 @@ class UserService extends BaseService
         }
     }
 
-    public function delete($request, $id)
+    public function destroy($request, $id)
     {
         try {
             $user = $this->user->find($id);

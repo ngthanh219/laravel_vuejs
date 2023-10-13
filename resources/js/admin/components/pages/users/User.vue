@@ -140,7 +140,7 @@
             </div>
         </section>
 
-        <UserInformation
+        <UserInformationPopup
             v-if="isForm"
 
             :closeForm="closeForm"
@@ -152,13 +152,13 @@
 
 <script>
     import TablePagination from '../../commons/pagination/TablePagination.vue';
-    import UserInformation from './UserInformation.vue';
+    import UserInformationPopup from './UserInformationPopup.vue';
 
     export default {
         name: "User",
         components: {
             TablePagination,
-            UserInformation
+            UserInformationPopup
         },
         data() {
             return {
@@ -202,27 +202,14 @@
                 e.preventDefault();
 
                 this.$helper.pushQueryUrl(this.query);
-
-                if (this.query.page >= this.dataList.total_page) {
-                    this.query.page = this.dataList.total_page;
-                }
-
-                if (this.query.page == 0) {
-                    this.query.page = 1;
-                }
-
+                this.$helper.setQueryPage(this.query, this.dataList);
                 this.getUserData();
             },
 
             sortUserData(e, queryParam) {
                 e.preventDefault();
 
-                if (this.query[queryParam] == "desc") {
-                    this.query[queryParam] = "asc";
-                } else {
-                    this.query[queryParam] = "desc";
-                }
-
+                this.$helper.setQuerySort(this.query, queryParam);
                 this.$helper.pushQueryUrl(this.query);
                 this.getUserData();
             },
@@ -251,11 +238,12 @@
                 e.preventDefault();
 
                 if (this.$store.state.auth.user.id != id) {
-                    var alertMessage = 'Bạn muốn xóa tài khoản này?';
-                    var successMessage = 'Xóa thành công';
+                    var alertMessage = this.$helper.getMessage('delete_action');
+                    var successMessage = this.$helper.getMessage('delete_success');
+
                     if (this.query.is_deleted == 1) {
-                        alertMessage = 'Bạn muốn khôi phục tài khoản này?';
-                        successMessage = 'Khôi phục thành công';
+                        alertMessage = this.$helper.getMessage('restore_action');
+                        successMessage = this.$helper.getMessage('restore_success');
                     }
 
                     if (confirm(alertMessage)) {

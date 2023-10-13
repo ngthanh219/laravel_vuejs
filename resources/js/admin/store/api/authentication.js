@@ -1,12 +1,12 @@
-import actionParams from "./index";
+import helper from "./index.js";
 
 let authentication = {
     login({state}, form) {
-        return actionParams.handleApi({state}, 'post', 'login', form);
+        return helper.handleApi({state}, 'post', 'login', form);
     },
 
     logout({state}, form) {
-        return actionParams.handleApi({state}, 'post', 'logout');
+        return helper.handleApi({state}, 'post', 'logout');
     },
 }
 

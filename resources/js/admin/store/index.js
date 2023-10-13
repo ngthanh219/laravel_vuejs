@@ -1,31 +1,21 @@
-import { createStore } from 'vuex';
-import createPersistedState from "vuex-persistedstate";
+import actions from './actions.js';
+import mutations from './mutations.js';
+import getters from './getters.js';
+import storeInstance from '../../modules/store.js';
 
-import actions from './actions';
-import mutations from './mutations';
-import getters from './getters';
-
-const store = createStore({
-    state: {
-        isUpdating: false,
-        isPageLoading: false,
-        auth: {
-            user: null,
-            accessToken: null
-        },
-        notification: {
-            success: 0,
-            message: null
-        },
+let state = {
+    isUpdating: false,
+    isPageLoading: false,
+    auth: {
+        user: null,
+        accessToken: null
     },
-    actions,
-    mutations,
-    getters,
-    plugins: [
-        createPersistedState({
-            key: 'c_admin'
-        })
-    ],
-});
+    notification: {
+        success: 0,
+        message: null
+    },
+};
+let localStorageKey = 'c_admin';
+const store = storeInstance.init(state, actions, mutations, getters, localStorageKey);
 
 export default store;

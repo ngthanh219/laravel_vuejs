@@ -1,19 +1,6 @@
-let getters = {
-    isUpdating: state => {
-        return state.isUpdating
-    },
-
-    auth: state => {
-        return state.auth
-    },
-
-    notification: state => {
-        return state.notification
-    },
-
-    isPageLoading: state => {
-        return state.isPageLoading
-    }
+export default {
+    isUpdating: state => state.isUpdating,
+    auth: state => state.auth,
+    notification: state => state.notification,
+    isPageLoading: state => state.isPageLoading
 }
-
-export default getters;

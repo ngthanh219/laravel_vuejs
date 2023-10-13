@@ -70,7 +70,7 @@
 
 <script>
     export default {
-        name: "UserInformation",
+        name: "UserInformationPopup",
         props: {
             closeForm: Function,
             getUserData: Function,
@@ -150,12 +150,12 @@
             async create() {
                 var transaction = false;
                 await this.$store.dispatch("createUser", {
-                    request: this.$helper.appendFormData(this.formData),
+                    request: this.formData,
                     error: this.formDataError
                 })
                 .then(res => {
                     transaction = true;
-                    this.$helper.setNotification(1, 'Tạo mới thành công');
+                    this.$helper.setNotification(1, this.$helper.getMessage('create_success'));
                 })
                 .catch(err => {
 
@@ -167,13 +167,14 @@
             async update() {
                 await this.$store.dispatch("updateUser", {
                     id: this.userData.id,
-                    request: this.$helper.appendFormData(this.formData),
+                    request: this.formData,
                     error: this.formDataError
                 })
                 .then(res => {
                     this.formData.is_change_password = 0;
+                    this.formData.password = '123456';
                     this.$helper.mergeArrayData(this.formData, this.userData);
-                    this.$helper.setNotification(1, 'Cập nhật thành công');
+                    this.$helper.setNotification(1, this.$helper.getMessage('update_success'));
                 })
                 .catch(err => {
 

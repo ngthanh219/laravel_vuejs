@@ -80,7 +80,7 @@
                 this.isLoginClick = true;
                 if (this.isLoginClick) {
                     await this.$store.dispatch('login', {
-                        request: this.$helper.appendFormData(this.formData),
+                        request: this.formData,
                         error: this.formDataError
                     })
                     .then(res => {

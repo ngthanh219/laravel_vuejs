@@ -22,6 +22,7 @@
 - npm install sass-loader
 - npm install vuex
 - npm install vuex-persistedstate
+- npm install vuelidate --save
 - npm run dev
 ```
 
