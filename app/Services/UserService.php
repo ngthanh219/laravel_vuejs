@@ -58,7 +58,7 @@ class UserService extends BaseService
         } catch (\Exception $ex) {
             GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
 
-            return $this->responseError(__('messages.system.server_error'), Response, ErrorCode::SERVER_ERROR);
+            return $this->responseError(__('messages.system.server_error'), 500, ErrorCode::SERVER_ERROR);
         }
     }
 

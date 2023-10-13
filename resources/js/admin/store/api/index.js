@@ -1,24 +1,23 @@
 import axios from 'axios';
 import env from '../../../env';
 import helper from '../../../modules/helper.js';
+import messages from '../../../lang/messages.js';
 
-const errorMessage = 'An error has occurred!';
+const errorMessage = messages.general_error.vi;
 
 function handleApi(
+    {state},
     method,
     url,
     form = {
         query: {},
         request: {},
         error: {}
-    },
-    {state} = null
+    }
 ) {
     var apiUrl = env.apiUrl + '/admin/';
-    console.log(apiUrl);
 
-    console.log(state);
-    if (state != null && state.auth.accessToken) {
+    if (state.auth.accessToken) {
         axios.defaults.headers.common = {'Authorization': `Bearer ` + state.auth.accessToken}
     }
 
@@ -46,7 +45,7 @@ function handleApi(
             resolve(res.data);
         })
         .catch((err) => {
-            reject(getError(err, form.error));
+            reject(rejectError(err, form.error));
         })
     });
 }
@@ -71,6 +70,27 @@ function handleFormDataError(errors, formDataError) {
     return formDataError;
 }
 
+function apiStatus(response, errors) {
+    if (typeof (response.status) !== 'undefined') {
+        switch (response.status) {
+            case 401: {
+                helper.setAuth({
+                    user: null,
+                    access_token: null
+                });
+        
+                helper.setNotification(0, null);
+                break;
+            }
+            
+            case 404: {
+                errors.message = response.data.message;
+                break;
+            }
+        }
+    }
+}
+
 function rejectError(err, formDataError = null) {
     var errors = {
         message: null,
@@ -83,15 +103,7 @@ function rejectError(err, formDataError = null) {
     };
 
     if (typeof (err.response) !== 'undefined') {
-        if (typeof (err.response.status) !== 'undefined' && err.response.status === 401) {
-            helper.setAuth({
-                user: null,
-                access_token: null
-            });
-
-            helper.setNotification(0, null);
-        }
-
+        apiStatus(err.response, errors);
         err = err.response.data;
 
         if (typeof (err.error) !== 'undefined') {

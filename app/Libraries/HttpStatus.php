@@ -12,4 +12,5 @@ class HttpStatus
     const FORBIDDEN = Response::HTTP_FORBIDDEN;
     const NOT_FOUND = Response::HTTP_NOT_FOUND;
     const INTERNAL_SERVER_ERROR = Response::HTTP_INTERNAL_SERVER_ERROR;
+    const SERVICE_UNAVAILABLE = Response::HTTP_SERVICE_UNAVAILABLE;
 }

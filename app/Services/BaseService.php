@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Libraries\ErrorCode;
+use App\Libraries\HttpStatus;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
@@ -40,22 +41,24 @@ class BaseService
             $response['message'] = $message ? $message : __('messages.data_status.success');
         }
 
-        Log::info(json_encode([
-            'url' => request()->url(),
-            'method' => request()->method(),
-            'body' => request()->all(),
-            'status_code' => 200,
-            'message' => $message,
-        ], JSON_UNESCAPED_UNICODE));
+        if (config('app.debug')) {
+            Log::info(json_encode([
+                'url' => request()->url(),
+                'method' => request()->method(),
+                'body' => request()->all(),
+                'status_code' => HttpStatus::OK,
+                'message' => $message,
+            ], JSON_UNESCAPED_UNICODE));
+        }
 
         return response()->json(array_merge($response, $appends));
     }
 
-    public function responseError($errorMessage, $httpCode = 500, $errorCode = ErrorCode::SERVER_ERROR, $appends = [])
+    public function responseError($errorMessage, $httpCode = HttpStatus::INTERNAL_SERVER_ERROR, $errorCode = ErrorCode::SERVER_ERROR, $appends = [])
     {
         $errorCode = 'E' . str_pad($errorCode, 4, 0, STR_PAD_LEFT);
 
-        if ($httpCode == 400 || $httpCode == 500) {
+        if ($httpCode == HttpStatus::BAD_REQUEST || $httpCode == HttpStatus::INTERNAL_SERVER_ERROR) {
             Log::error(json_encode([
                 'url' => request()->url(),
                 'method' => request()->method(),

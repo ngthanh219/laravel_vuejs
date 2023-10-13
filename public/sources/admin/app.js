@@ -24642,39 +24642,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index */ "./resources/js/admin/store/api/index.js");
 
 var authentication = {
-  // login({state}, form) {
-  //     return new Promise((resolve, reject) => {
-  //         axios.post(actionParams.API + 'login', form.request)
-  //         .then((res) => {
-  //             actionParams.clearFormDataError(form.error);
-  //             resolve(res.data);
-  //         })
-  //         .catch((err) => {
-  //             reject(actionParams.getError(err, form.error));
-  //         })
-  //     });
-  // },
-  // logout({state}, form) {
-  //     return new Promise((resolve, reject) => {
-  //         axios.post(actionParams.API + 'logout')
-  //         .then((res) => {
-  //             actionParams.clearFormDataError(form.error);
-  //             resolve(res.data);
-  //         })
-  //         .catch((err) => {
-  //             reject(actionParams.getError(err, form.error));
-  //         })
-  //     });
-  // },
   login: function login(_ref, form) {
     var state = _ref.state;
-    return _index__WEBPACK_IMPORTED_MODULE_0__["default"].handleApi('post', 'login', form, {
+    return _index__WEBPACK_IMPORTED_MODULE_0__["default"].handleApi({
       state: state
-    });
+    }, 'post', 'login', form);
   },
   logout: function logout(_ref2, form) {
     var state = _ref2.state;
-    return _index__WEBPACK_IMPORTED_MODULE_0__["default"].handleApi('post', 'logout');
+    return _index__WEBPACK_IMPORTED_MODULE_0__["default"].handleApi({
+      state: state
+    }, 'post', 'logout');
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (authentication);
@@ -24696,22 +24674,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _env__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../env */ "./resources/js/env.js");
 /* harmony import */ var _modules_helper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../modules/helper.js */ "./resources/js/modules/helper.js");
+/* harmony import */ var _lang_messages_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../lang/messages.js */ "./resources/js/lang/messages.js");
 
 
 
-var errorMessage = 'An error has occurred!';
-function handleApi(method, url) {
-  var form = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+
+var errorMessage = _lang_messages_js__WEBPACK_IMPORTED_MODULE_3__["default"].general_error.vi;
+function handleApi(_ref, method, url) {
+  var state = _ref.state;
+  var form = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
     query: {},
     request: {},
     error: {}
   };
-  var _ref = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null,
-    state = _ref.state;
   var apiUrl = _env__WEBPACK_IMPORTED_MODULE_1__["default"].apiUrl + '/admin/';
-  console.log(apiUrl);
-  console.log(state);
-  if (state != null && state.auth.accessToken) {
+  if (state.auth.accessToken) {
     (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults).headers.common = {
       'Authorization': "Bearer " + state.auth.accessToken
     };
@@ -24735,7 +24712,7 @@ function handleApi(method, url) {
       clearFormDataError(form.error);
       resolve(res.data);
     })["catch"](function (err) {
-      reject(getError(err, form.error));
+      reject(rejectError(err, form.error));
     });
   });
 }
@@ -24755,6 +24732,26 @@ function handleFormDataError(errors, formDataError) {
   }
   return formDataError;
 }
+function apiStatus(response, errors) {
+  if (typeof response.status !== 'undefined') {
+    switch (response.status) {
+      case 401:
+        {
+          _modules_helper_js__WEBPACK_IMPORTED_MODULE_2__["default"].setAuth({
+            user: null,
+            access_token: null
+          });
+          _modules_helper_js__WEBPACK_IMPORTED_MODULE_2__["default"].setNotification(0, null);
+          break;
+        }
+      case 404:
+        {
+          errors.message = response.data.message;
+          break;
+        }
+    }
+  }
+}
 function rejectError(err) {
   var formDataError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
   var errors = {
@@ -24766,13 +24763,7 @@ function rejectError(err) {
     message: null
   };
   if (typeof err.response !== 'undefined') {
-    if (typeof err.response.status !== 'undefined' && err.response.status === 401) {
-      _modules_helper_js__WEBPACK_IMPORTED_MODULE_2__["default"].setAuth({
-        user: null,
-        access_token: null
-      });
-      _modules_helper_js__WEBPACK_IMPORTED_MODULE_2__["default"].setNotification(0, null);
-    }
+    apiStatus(err.response, errors);
     err = err.response.data;
     if (typeof err.error !== 'undefined') {
       errors.message = err.error.error_message;
@@ -25043,6 +25034,27 @@ var env = {
   apiUrl: "http://localhost:8000/api/v1"
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (env);
+
+/***/ }),
+
+/***/ "./resources/js/lang/messages.js":
+/*!***************************************!*\
+  !*** ./resources/js/lang/messages.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var messages = {
+  'general_error': {
+    'vi': 'Đã có lỗi xảy ra. Vui lòng thử lại!',
+    'en': 'An error has occurred!'
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (messages);
 
 /***/ }),
 
