@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper" v-if="isAuth">
         <PageLoading v-if="$store.state.isPageLoading" />
 
         <Header />
@@ -30,6 +30,11 @@
             Notification,
             PageLoading
         },
+        data() {
+            return {
+                isAuth: false
+            }
+        },
         mounted() {
             this.$helper.setNotification(0, null);
             this.middleware();
@@ -43,6 +48,8 @@
 
                 if (!auth.accessToken || !auth.user) {
                     this.$helper.redirectPage('login');
+                } else {
+                    this.isAuth = true;
                 }
             }
         }

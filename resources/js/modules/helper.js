@@ -3,12 +3,14 @@ import axios from 'axios';
 let helper = {
     store: null,
     router: null,
+    lang: null,
     messages: null,
     env: null,
 
-    init(store, router, messages, env) {
+    init(store, router, lang, messages, env) {
         this.store = store;
         this.router = router;
+        this.lang = lang;
         this.messages = messages;
         this.env = env;
     },
@@ -68,6 +70,23 @@ let helper = {
         var currentForm = this.handleQueryParam(form);
 
         return '?' + new URLSearchParams(currentForm).toString();
+    },
+
+    queryQueryObject(queryString) {
+        var params = {};
+        if (queryString.charAt(0) === '?') {
+            queryString = queryString.slice(1);
+        }
+      
+        var paramArray = queryString.split('&');
+        paramArray.forEach(function(param) {
+            var keyValue = param.split('=');
+            var key = decodeURIComponent(keyValue[0]);
+            var value = decodeURIComponent(keyValue[1]);
+            params[key] = value;
+        });
+      
+        return params;
     },
 
     getCurrentQuery(query) {
@@ -172,6 +191,18 @@ let helper = {
             query[param] = "asc";
         } else {
             query[param] = "desc";
+        }
+    },
+
+    getLang(key) {
+        var newKey = key + '.' + this.env.locale;
+
+        try {
+            return newKey.split('.').reduce(function(obj, currentKey) {
+                return obj[currentKey];
+            }, this.lang);
+        } catch (err) {
+            return key;
         }
     },
 

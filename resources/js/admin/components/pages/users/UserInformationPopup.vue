@@ -2,61 +2,63 @@
     <div class="popup-component" v-bind:class="{ 'transition-active': !isTransitionActive }">
         <div class="pc-form" v-bind:class="{ 'transition-active': isTransitionActive }">
             <div class="content">
-                <div class="container-fluid" style="width: 60%">
+                <div class="container-fluid" style="width: 500px">
                     <div class="row">
                         <div class="col-md-12">
                             <form @submit="handleData">
                                 <div class="card card-primary">
                                     <div class="card-header">
                                         <h3 class="card-title">
-                                            {{ userData ? 'Thông tin tài khoản' : 'Thêm mới tài khoản' }}
+                                            {{ $helper.getLang('page.user.form.' + (userData ? 'user_information' : 'create_new_user')) }}
                                         </h3>
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group">
-                                            <label>Trạng thái</label>
+                                            <label>{{ $helper.getLang('page.user.login_status') }}</label>
                                             <select class="form-control" v-model="formData.is_login">
-                                                <option value="0">Chưa đăng nhập</option>
-                                                <option value="1">Đã đăng nhập</option>
+                                                <option value="0">{{ $helper.getLang('page.user.login_status.not_logged') }}</option>
+                                                <option value="1">{{ $helper.getLang('page.user.login_status.logged') }}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>Chức vụ</label>
+                                            <label>{{ $helper.getLang('page.user.role') }}</label>
                                             <select class="form-control" v-model="formData.role_id">
-                                                <option value="0">Admin</option>
-                                                <option value="1">Người dùng</option>
+                                                <option value="0">{{ $helper.getLang('page.user.role.admin') }}</option>
+                                                <option value="1">{{ $helper.getLang('page.user.role.user') }}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>Họ tên</label>
-                                            <input type="text" class="form-control form-control-border" placeholder="xxx" v-model="formData.name">
+                                            <label>{{ $helper.getLang('page.user.name') }}</label>
+                                            <input type="text" class="form-control form-control-border" :placeholder="$helper.getLang('page.form.typing')" v-model="formData.name">
                                         </div>
                                         <div class="form-group">
-                                            <label>Số điện thoại</label>
-                                            <input type="text" class="form-control form-control-border" placeholder="xxx" v-model="formData.phone">
+                                            <label>{{ $helper.getLang('page.user.phone') }}</label>
+                                            <input type="text" class="form-control form-control-border" :placeholder="$helper.getLang('page.form.typing')" v-model="formData.phone">
                                         </div>
                                         <div class="form-group">
-                                            <label>Email</label>
-                                            <input type="text" class="form-control form-control-border" placeholder="xxx" v-model="formData.email">
+                                            <label>{{ $helper.getLang('page.user.email') }}</label>
+                                            <input type="text" class="form-control form-control-border" :placeholder="$helper.getLang('page.form.typing')" v-model="formData.email">
                                         </div>
                                         <div class="form-group" v-if="userData != null">
                                             <div class="custom-control custom-checkbox">
                                                 <input class="custom-control-input" type="checkbox" id="customCheckbox2" v-model="formData.is_change_password" :checked="formData.is_change_password == 1">
-                                                <label for="customCheckbox2" class="custom-control-label cursor-pointer">Đổi mật khẩu</label>
+                                                <label for="customCheckbox2" class="custom-control-label cursor-pointer">{{ $helper.getLang('page.user.form.change_password') }}</label>
                                             </div>
                                         </div>
                                         <div class="form-group" v-if="formData.is_change_password == 1 || userData == null">
-                                            <label>Mật khẩu</label>
-                                            <input type="text" class="form-control form-control-border" placeholder="xxx" v-model="formData.password">
+                                            <label>{{ $helper.getLang('page.user.password') }}</label>
+                                            <input type="text" class="form-control form-control-border" :placeholder="$helper.getLang('page.form.typing')" v-model="formData.password">
                                         </div>
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary mr-2" v-bind:class="{
                                             disabled: !(this.$helper.checkChangeFormData(userData, formData) || formData.is_change_password == 1)
                                         }">
-                                            {{ userData ? 'Cập nhật' : 'Thêm mới' }}
+                                            {{ $helper.getLang('button.' + (userData ? 'update' : 'create')) }}
                                         </button>
-                                        <a class="btn btn-danger" @click="closeFormComponent">Hủy</a>
+                                        <a class="btn btn-danger" @click="closeFormComponent">
+                                            {{ $helper.getLang('button.cancel') }}
+                                        </a>
                                     </div>
                                 </div>
                             </form>
@@ -155,7 +157,7 @@
                 })
                 .then(res => {
                     transaction = true;
-                    this.$helper.setNotification(1, this.$helper.getMessage('create_success'));
+                    this.$helper.setNotification(1, this.$helper.getLang('messages.create_success'));
                 })
                 .catch(err => {
 
@@ -174,7 +176,7 @@
                     this.formData.is_change_password = 0;
                     this.formData.password = '123456';
                     this.$helper.mergeArrayData(this.formData, this.userData);
-                    this.$helper.setNotification(1, this.$helper.getMessage('update_success'));
+                    this.$helper.setNotification(1, this.$helper.getLang('messages.update_success'));
                 })
                 .catch(err => {
 

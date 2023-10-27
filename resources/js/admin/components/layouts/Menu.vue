@@ -2,7 +2,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <a class="brand-link">
             <div class="brand-image img-circle elevation-3">DMS</div>
-            <span class="brand-text font-weight-light">Quản trị hệ thống</span>
+            <span class="brand-text font-weight-light">{{ $helper.getLang('layout.menu.title') }}</span>
         </a>
         <div class="sidebar" style="overflow-y: auto;">
             <nav class="mt-2">
@@ -10,7 +10,7 @@
                     <li class="nav-item">
                         <router-link to="/admin/users" class="nav-link">
                             <i class="nav-icon far fa-user"></i>
-                            <p>Quản lý tài khoản</p>
+                            <p>{{ $helper.getLang('page.user.title') }}</p>
                         </router-link>
                     </li>
                 </ul>

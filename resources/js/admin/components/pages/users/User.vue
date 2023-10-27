@@ -4,39 +4,39 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <a href="/" class="btn btn-primary" @click="openForm">
-                            <i class="id-icon fas fa-plus mr-2"></i>Thêm mới
+                        <a class="btn btn-primary" @click="openForm">
+                            <i class="id-icon fas fa-plus mr-2"></i>{{ $helper.getLang('button.create') }}
                         </a>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
-                                Trang chủ
+                                {{ $helper.getLang('page.home') }}
                             </li>
-                            <li class="breadcrumb-item active">Quản lý người dùng</li>
+                            <li class="breadcrumb-item active">{{ $helper.getLang('page.user.title') }}</li>
                         </ol>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group input-group-sm">
-                            <label>Thông tin</label>
-                            <input type="text" class="form-control" placeholder="Email, số điện thoại" v-model="query.information">
+                            <label>{{ $helper.getLang('page.user.filter.information') }}</label>
+                            <input type="text" class="form-control" :placeholder="$helper.getLang('page.user.filter.information.placeholder')" v-model="query.information">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group input-group-sm">
-                            <label>Trạng thái</label>
+                            <label>{{ $helper.getLang('page.user.login_status') }}</label>
                             <select class="form-control" v-model="query.is_login">
-                                <option value="2">Tất cả</option>
-                                <option value="0">Chưa đăng nhập</option>
-                                <option value="1">Đã đăng nhập</option>
+                                <option value="2">{{ $helper.getLang('page.user.login_status.all') }}</option>
+                                <option value="0">{{ $helper.getLang('page.user.login_status.not_logged') }}</option>
+                                <option value="1">{{ $helper.getLang('page.user.login_status.logged') }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6 d-flex align-items-end">
                         <div class="form-group input-group-sm">
-                            <a href="/" class="btn btn-primary" @click="filter">Lọc</a>
+                            <a :href="$helper.getQueryString(query)" class="btn btn-primary" @click="filter">{{ $helper.getLang('button.filter') }}</a>
                         </div>
                     </div>
                 </div>
@@ -70,19 +70,19 @@
                                                     />
                                                 </a>
                                             </th>
-                                            <th style="width: 250px">Chức vụ</th>
-                                            <th style="width: 250px">Họ tên</th>
-                                            <th style="width: 250px">Số điện thoại</th>
-                                            <th style="width: 250px">Email</th>
-                                            <th style="width: 250px">Trạng thái đăng nhập</th>
-                                            <th style="width: 250px">Ngày tạo</th>
+                                            <th style="width: 250px">{{ $helper.getLang('page.user.role') }}</th>
+                                            <th style="width: 250px">{{ $helper.getLang('page.user.name') }}</th>
+                                            <th style="width: 250px">{{ $helper.getLang('page.user.phone') }}</th>
+                                            <th style="width: 250px">{{ $helper.getLang('page.user.email') }}</th>
+                                            <th style="width: 250px">{{ $helper.getLang('page.user.login_status') }}</th>
+                                            <th style="width: 250px">{{ $helper.getLang('page.table.created_at') }}</th>
                                             <th style="width: 100px"></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="table-data" v-if="dataList">
+                                    <tbody class="table-data" v-if="dataList && dataList.list.length > 0">
                                         <tr v-for="data, index in dataList.list">
                                             <td>{{ data.id }}</td>
-                                            <td>{{ data.role_id == 0 ? 'Admin' : 'Người dùng' }}</td>
+                                            <td>{{ $helper.getLang('page.user.role.' + (data.role_id == 0 ? 'admin' : 'user')) }}</td>
                                             <td>{{ data.name }}</td>
                                             <td>{{ data.phone }}</td>
                                             <td>{{ data.email }}</td>
@@ -93,7 +93,7 @@
                                                         data.is_login == 1 ? 'alert-success' : 'alert-secondary'
                                                     ]"
                                                 >
-                                                    {{ data.is_login == 1 ? 'Đã đăng nhập' : 'Chưa đăng nhập' }}
+                                                    {{ $helper.getLang('page.user.login_status.' + (data.is_login == 1 ? 'logged' : 'not_logged')) }}
                                                 </span>
                                             </td>
                                             <td>{{ data.created_at }}</td>
@@ -109,7 +109,7 @@
                                                     <div class="action-detail">
                                                         <a class="action-detail-btn" v-if="query.is_deleted == 0" @click="openForm($event, index, dataList.list[index])">
                                                             <i class="fas fa-eye"></i>
-                                                            <div class="icon-wrap">Xem thông tin</div>
+                                                            <div class="icon-wrap">{{ $helper.getLang('button.show') }}</div>
                                                         </a>
                                                         <a class="action-detail-btn" v-bind:class="{ 'disabled' : $store.state.auth.user.id == data.id }" @click="deleteData($event, data.id)">
                                                             <i 
@@ -119,7 +119,7 @@
                                                                 ]"
                                                             />
                                                             <div class="icon-wrap">
-                                                                {{ query.is_deleted == 0 ? 'Xóa' : 'Khôi phục' }}
+                                                                {{ $helper.getLang('button.' + (query.is_deleted == 0 ? 'delete' : 'restore')) }}
                                                             </div>
                                                         </a>
                                                     </div>
@@ -127,12 +127,10 @@
                                             </td>
                                         </tr>
                                     </tbody>
-                                    <tbody v-if="dataList && dataList.list.length == 0">
-                                        <tr>
-                                            <td colspan="10">Không có dữ liệu</td>
-                                        </tr>
-                                    </tbody>
                                 </table>
+                                <div class="text-center no-data" v-if="dataList && dataList.list.length == 0">
+                                    {{ $helper.getLang('page.table.no_data') }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -238,12 +236,12 @@
                 e.preventDefault();
 
                 if (this.$store.state.auth.user.id != id) {
-                    var alertMessage = this.$helper.getMessage('delete_action');
-                    var successMessage = this.$helper.getMessage('delete_success');
+                    var alertMessage = this.$helper.getLang('messages.delete_action');
+                    var successMessage = this.$helper.getLang('messages.delete_success');
 
                     if (this.query.is_deleted == 1) {
-                        alertMessage = this.$helper.getMessage('restore_action');
-                        successMessage = this.$helper.getMessage('restore_success');
+                        alertMessage = this.$helper.getLang('messages.restore_action');
+                        successMessage = this.$helper.getLang('messages.restore_success');
                     }
 
                     if (confirm(alertMessage)) {

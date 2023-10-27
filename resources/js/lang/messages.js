@@ -1,4 +1,8 @@
 const messages = {
+    'stop': {
+        'vi': 'Dừng lại',
+        'en': 'Stop'
+    },
     'general_error': {
         'vi': 'Đã có lỗi xảy ra. Vui lòng thử lại!',
         'en': 'An error has occurred!'

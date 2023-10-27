@@ -10,15 +10,15 @@
         <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    thanhnt6
+                    {{ $store.state.auth.user.name == null ? $store.state.auth.user.email : $store.state.auth.user.name }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <div class="dropdown-divider"></div>
                     <a href="#" class="dropdown-item">
-                        Change information
+                        {{ $helper.getLang('layout.header.account_information') }}
                     </a>
                     <a href="#" class="dropdown-item">
-                        Change password
+                        {{ $helper.getLang('layout.header.change_password') }}
                     </a>
                     <div class="dropdown-divider"></div>
                     <!-- <a href="#" class="dropdown-footer">
@@ -30,7 +30,9 @@
                     </a> -->
                     <a href="#" class="dropdown-footer">
                         <form v-on:submit="logout">
-                            <button type="submit" class="border-0 bg-danger d-flex justify-content-center align-items-center w-100" style="border-radius: 3px">Logout</button>
+                            <button type="submit" class="border-0 bg-danger d-flex justify-content-center align-items-center w-100" style="border-radius: 3px">
+                                {{ $helper.getLang('layout.header.logout') }}
+                            </button>
                         </form>
                     </a>
                 </div>

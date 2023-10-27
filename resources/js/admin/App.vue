@@ -8,7 +8,7 @@
         mounted() {
             console.clear();
             console.log(
-                "%cDừng lại!",
+                "%c" + this.$helper.getLang('messages.stop') +"!",
                 "color:red;font-size:50px;",
             );
         }

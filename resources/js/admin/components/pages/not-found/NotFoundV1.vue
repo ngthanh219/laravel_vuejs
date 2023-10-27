@@ -1,7 +1,7 @@
 <template>
     <div class="content-wrapper">
         <div class="content">
-            Trang này không tồn tại
+            {{ $helper.getLang('page.not_found.v1') }}
         </div>
     </div>
 </template>

@@ -13,7 +13,7 @@
                         $store.state.notification.success == 1 ? 'fa-check' : 'fa-ban'
                     ]"
                 />
-                {{ $store.state.notification.success == 1 ? 'Thông báo' : 'Cảnh báo' }}
+                {{ $store.state.notification.success == 1 ? this.$helper.getLang('layout.notification') : this.$helper.getLang('layout.notification.alert') }}
             </h5>
             {{$store.state.notification.message}}
         </div>
