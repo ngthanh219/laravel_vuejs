@@ -44,10 +44,9 @@
         },
         methods: {
             middleware() {
-                this.isAuth = false;
-                var auth = this.$store.state.auth;
+                var auth = this.$helper.getAuth();
 
-                if (auth.accessToken == null) {
+                if (auth == null) {
                     this.$helper.redirectPage('login');
                 } else {
                     this.isAuth = true;
