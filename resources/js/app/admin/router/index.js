@@ -1,5 +1,4 @@
 import Login from "../components/pages/auth/Login.vue";
-
 import Layout from "../components/Layout.vue";
 import NotFoundV1 from "../components/pages/not-found/NotFoundV1.vue";
 import User from "../components/pages/users/User.vue";
@@ -30,4 +29,3 @@ const routes = [
 ]
 
 export default routes;
-

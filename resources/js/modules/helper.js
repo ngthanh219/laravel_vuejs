@@ -1,17 +1,13 @@
-import axios from 'axios';
-
 let helper = {
     store: null,
     router: null,
     lang: null,
-    messages: null,
     env: null,
 
-    init(store, router, lang, messages, env) {
+    init(store, router, lang, env) {
         this.store = store;
         this.router = router;
         this.lang = lang;
-        this.messages = messages;
         this.env = env;
     },
 
@@ -27,11 +23,27 @@ let helper = {
 
         this.store.commit('setAuth', auth);
     },
+
+    getAuth() {
+        var auth = this.store.state.auth;
+        if (auth.accessToken != null) {
+            return auth;
+        }
+
+        return null;
+    },
     
     setNotification(success, message) {
         this.store.commit('setNotification', {
             success: success,
             message: message
+        });
+    },
+
+    scrollTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
         });
     },
 
@@ -99,7 +111,7 @@ let helper = {
         }
     },
 
-    appendFormData(form) {
+    getFormData(form) {
         const formData = new FormData();
 
         for (var param in form) {
@@ -124,18 +136,17 @@ let helper = {
     },
 
     formatDuration(duration) {
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        const seconds = duration % 60;
+        let hours = (Math.floor(duration / 3600)).toString().padStart(2, '0');
+        let minutes = (Math.floor((duration % 3600) / 60)).toString().padStart(2, '0');
+        let seconds = (duration % 60).toString().padStart(2, '0');
 
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    },
+        if (hours == '00') {
+            hours = '';
+        } else {
+            hours = hours + ':';
+        }
 
-    scrollTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
+        return `${hours}${minutes}:${seconds}`;
     },
 
     mergeArrayData(array1, array2) {
@@ -168,10 +179,10 @@ let helper = {
         return check;
     },
 
-    clearFormDataError(formDataError) {
-        if (formDataError) {
-            for (var param in formDataError) {
-                formDataError[param] = '';
+    clearFormData(formData) {
+        if (formData) {
+            for (var param in formData) {
+                formData[param] = '';
             }
         }
     },
@@ -204,140 +215,6 @@ let helper = {
         } catch (err) {
             return key;
         }
-    },
-
-    getMessage(key) {
-        return this.messages[key][this.env.locale];
-    },
-
-    handleApi(
-        {state},
-        method,
-        url,
-        form = {
-            query: {},
-            request: {},
-            error: {}
-        }
-    ) {
-        var apiUrl = this.env.apiUrl + '/admin/' + url;
-        if (method.toLowerCase() == 'put' || method.toLowerCase() == 'delete') {
-            apiUrl = apiUrl + '/' + form.id;
-        }
-    
-        if (state.auth.accessToken) {
-            axios.defaults.headers.common = {'Authorization': `Bearer ` + state.auth.accessToken}
-        }
-    
-        return new Promise((resolve, reject) => {
-            var axiosIns = null;
-    
-            switch(method.toLowerCase()) {
-                case 'get':
-                    axiosIns = axios.get(apiUrl + form.query);
-                    break;
-    
-                case 'post':
-                    axiosIns = axios.post(apiUrl, this.appendFormData(form.request));
-                    break;
-    
-                case 'put':
-                    axiosIns = axios.post(apiUrl, this.appendFormData(form.request), {
-                        params: {
-                            _method: method.toUpperCase()
-                        }
-                    });
-                    break;
-    
-                case 'delete':
-                    axiosIns = axios.delete(apiUrl, this.appendFormData(form.request));
-                    break;
-            }
-    
-            axiosIns
-            .then((res) => {
-                this.clearFormDataError(form.error);
-                resolve(res.data);
-            })
-            .catch((err) => {
-                reject(this.rejectError(err, form.error));
-            })
-        });
-    },
-
-    rejectError(err, formDataError = null) {
-        var errors = {
-            message: null,
-            validation: null
-        };
-    
-        var notification = {
-            success: 0,
-            message: null
-        };
-    
-        if (typeof (err.response) !== 'undefined') {
-            this.apiStatus(err.response, errors);
-            err = err.response.data;
-    
-            if (typeof (err.error) !== 'undefined') {
-                errors.message = err.error.error_message;
-            }
-    
-            if (typeof (err.validation) !== 'undefined') {
-                errors.validation = err.validation;
-            }
-    
-            notification.message = errors.message;
-        } else {
-            errors.message = this.getMessage('general_error');
-            notification.message = errors.message;
-        }
-    
-        this.setNotification(notification.success, notification.message);
-    
-        return this.handleFormDataError(errors, formDataError);
-    },
-
-    apiStatus(response, errors) {
-        if (typeof (response.status) !== 'undefined') {
-            switch (response.status) {
-                case 401: {
-                    this.setAuth({
-                        user: null,
-                        access_token: null
-                    });
-            
-                    this.setNotification(0, null);
-                    break;
-                }
-                
-                case 404: {
-                    errors.message = response.data.message;
-                    break;
-                }
-            }
-        }
-    },
-
-    handleFormDataError(errors, formDataError) {
-        if (errors.validation) {
-            for (var param in formDataError) {
-                formDataError[param] = '';
-    
-                if (errors.validation[param]) {
-                    formDataError[param] = errors.validation[param][0];
-                }
-            }
-        } else {
-            for (var param in formDataError) {
-                formDataError[param] = '';
-            }
-    
-            formDataError.message = errors.message;
-        }
-    
-        return formDataError;
     },
 }
 

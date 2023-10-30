@@ -111,7 +111,7 @@
                                                             <i class="fas fa-eye"></i>
                                                             <div class="icon-wrap">{{ $helper.getLang('button.show') }}</div>
                                                         </a>
-                                                        <a class="action-detail-btn" v-bind:class="{ 'disabled' : $store.state.auth.user.id == data.id }" @click="deleteData($event, data.id)">
+                                                        <a class="action-detail-btn" v-bind:class="{ 'disabled' : ($helper.getAuth() == null ? false : ($helper.getAuth().user.id == data.id ? true : false)) }" @click="deleteData($event, data.id)">
                                                             <i 
                                                                 class="fas"
                                                                 v-bind:class="[

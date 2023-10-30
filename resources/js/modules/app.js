@@ -1,11 +1,11 @@
 import '../bootstrap.js';
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 
 let appInstance = (
-    env,
-    router,
     component,
+    router,
     store,
+    env,
     helper
 ) => {
     const app = createApp(component);

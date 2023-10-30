@@ -12,7 +12,14 @@
 <script src="{{ asset('sources/admin/AdminLTE/plugins/summernote/summernote-bs4.min.js') }}"></script>
 <script src="{{ asset('sources/admin/AdminLTE/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <script src="{{ asset('sources/admin/AdminLTE/dist/js/adminlte.js') }}"></script>
-<script src="{{ asset('sources/admin/app.js?v=' . time()) }}" defer></script>
+
+{{-- <script src="{{ asset('sources/admin/app.js?v=' . time()) }}" defer></script> --}}
+@if ($env === 'production')
+    <script src="{{ asset('sources/admin/app.js?' . strtotime("now")) }}"></script>
+@else
+    @vite('resources/js/app/admin/app.js')
+@endif
+
 <script defer>
     $.widget.bridge('uibutton', $.ui.button)
 </script>

@@ -9,6 +9,10 @@ class AppController extends Controller
 {
     public function index()
     {
-        return view('admin.app');
+        $env = config('app.env');
+
+        return view('admin.app', [  
+            'env' => $env
+        ]);
     }
 }

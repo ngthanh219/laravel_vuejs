@@ -1,7 +1,6 @@
 import actions from './actions.js';
 import mutations from './mutations.js';
 import getters from './getters.js';
-import storeInstance from '../../modules/store.js';
 
 let state = {
     isUpdating: false,
@@ -16,6 +15,11 @@ let state = {
     },
 };
 let localStorageKey = 'c_admin';
-const store = storeInstance.init(state, actions, mutations, getters, localStorageKey);
 
-export default store;
+export default {
+    state,
+    actions,
+    mutations,
+    getters,
+    localStorageKey
+};

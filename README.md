@@ -15,9 +15,12 @@
 - php artisan ui vue
 - npm install
 - npm install webpack --save
-- npm install laravel-mix
+- Install mix
+    + npm install laravel-mix
+- Install vite
+    + npm install @vitejs/plugin-vue
+    + npm install laravel-vite-plugin
 - npm install vue@next vue-loader@next
-- npm install @vitejs/plugin-vue
 - npm install vue-router
 - npm install sass-loader
 - npm install vuex
