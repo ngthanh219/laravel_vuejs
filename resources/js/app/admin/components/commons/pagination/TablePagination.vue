@@ -5,29 +5,29 @@
                 dataList
                     ? (query.limit * query.page >= dataList.total_record ? dataList.total_record : query.limit * query.page) + ' / ' + dataList.total_record
                     : '0 / 0'
-            }} {{ this.$helper.getLang('page.pagination.data') }}
+            }} {{ this.$helpers.lang.get('page.pagination.data') }}
         </h3>
         <div class="card-tools row">
             <div class="input-group input-group-sm data-filter deleted">
-                <div class="label">{{ this.$helper.getLang('page.pagination.data_type') }}: </div>
+                <div class="label">{{ this.$helpers.lang.get('page.pagination.data_type') }}: </div>
                 <select class="form-control" v-model="query.is_deleted" @change="trashedFilter">
-                    <option value="0">{{ this.$helper.getLang('page.pagination.data_type.available') }}</option>
-                    <option value="1">{{ this.$helper.getLang('page.pagination.data_type.deleted') }}</option>
+                    <option value="0">{{ this.$helpers.lang.get('page.pagination.data_type.available') }}</option>
+                    <option value="1">{{ this.$helpers.lang.get('page.pagination.data_type.deleted') }}</option>
                 </select>
             </div>
             <div class="input-group input-group-sm data-filter page">
-                <div class="label">{{ this.$helper.getLang('page.pagination.page') }}: </div>
+                <div class="label">{{ this.$helpers.lang.get('page.pagination.page') }}: </div>
                 <input 
                     type="text" 
                     class="form-control" 
                     v-model="query.page" 
-                    @keypress="this.$helper.isNumber($event)"
+                    @keypress="this.$helpers.isNumber($event)"
                     @keyup.enter="pageFilter"
                 />
                 <!-- @blur="filter" -->
             </div>
             <div class="input-group input-group-sm data-filter">
-                <div class="label">{{ this.$helper.getLang('page.pagination.show') }}: </div>
+                <div class="label">{{ this.$helpers.lang.get('page.pagination.show') }}: </div>
                 <select class="form-control" v-model="query.limit" @change="limitFilter">
                     <option value="15">15</option>
                     <option value="30">30</option>
@@ -76,11 +76,11 @@
         },
         methods: {
             getUrl(status) {
-                var query = this.$helper.getQueryString(this.query);
-                var queryObject = this.$helper.queryQueryObject(query);
+                var query = this.$helpers.router.getQueryString(this.query);
+                var queryObject = this.$helpers.router.queryQueryObject(query);
                 queryObject.page = (status ? parseInt(queryObject.page) + 1 : parseInt(queryObject.page) - 1);
 
-                return this.$helper.getQueryString(queryObject);
+                return this.$helpers.router.getQueryString(queryObject);
             },
 
             trashedFilter(e) {
@@ -104,8 +104,8 @@
             },
 
             filterDataTable() {
-                this.$helper.setQueryPage(this.query, this.dataList);
-                this.$helper.pushQueryUrl(this.query);
+                this.$helpers.setQueryPage(this.query, this.dataList);
+                this.$helpers.router.pushQueryUrl(this.query);
                 this.getData();
             },
 

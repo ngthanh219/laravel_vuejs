@@ -1,12 +1,12 @@
-import services from "./index.js";
+import api from "./index.js";
 
 let authentication = {
     login({state}, form) {
-        return services.callApi({state}, 'post', 'login', form);
+        return api.handle({state}, 'post', 'login', form);
     },
 
     logout({state}, form) {
-        return services.callApi({state}, 'post', 'logout');
+        return api.handle({state}, 'post', 'logout');
     },
 }
 

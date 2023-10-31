@@ -5,38 +5,38 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <a class="btn btn-primary" @click="openForm">
-                            <i class="id-icon fas fa-plus mr-2"></i>{{ $helper.getLang('button.create') }}
+                            <i class="id-icon fas fa-plus mr-2"></i>{{ $helpers.lang.get('button.create') }}
                         </a>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
-                                {{ $helper.getLang('page.home') }}
+                                {{ $helpers.lang.get('page.home') }}
                             </li>
-                            <li class="breadcrumb-item active">{{ $helper.getLang('page.user.title') }}</li>
+                            <li class="breadcrumb-item active">{{ $helpers.lang.get('page.user.title') }}</li>
                         </ol>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group input-group-sm">
-                            <label>{{ $helper.getLang('page.user.filter.information') }}</label>
-                            <input type="text" class="form-control" :placeholder="$helper.getLang('page.user.filter.information.placeholder')" v-model="query.information">
+                            <label>{{ $helpers.lang.get('page.user.filter.information') }}</label>
+                            <input type="text" class="form-control" :placeholder="$helpers.lang.get('page.user.filter.information.placeholder')" v-model="query.information">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group input-group-sm">
-                            <label>{{ $helper.getLang('page.user.login_status') }}</label>
+                            <label>{{ $helpers.lang.get('page.user.login_status') }}</label>
                             <select class="form-control" v-model="query.is_login">
-                                <option value="2">{{ $helper.getLang('page.user.login_status.all') }}</option>
-                                <option value="0">{{ $helper.getLang('page.user.login_status.not_logged') }}</option>
-                                <option value="1">{{ $helper.getLang('page.user.login_status.logged') }}</option>
+                                <option :value="$constant.LOGIN_STATUS.ALL">{{ $helpers.lang.get('page.user.login_status.all') }}</option>
+                                <option :value="$constant.LOGIN_STATUS.NOT_LOGGED">{{ $helpers.lang.get('page.user.login_status.not_logged') }}</option>
+                                <option :value="$constant.LOGIN_STATUS.LOGGED">{{ $helpers.lang.get('page.user.login_status.logged') }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6 d-flex align-items-end">
                         <div class="form-group input-group-sm">
-                            <a :href="$helper.getQueryString(query)" class="btn btn-primary" @click="filter">{{ $helper.getLang('button.filter') }}</a>
+                            <a :href="$helpers.router.getQueryString(query)" class="btn btn-primary" @click="filter">{{ $helpers.lang.get('button.filter') }}</a>
                         </div>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                                 v-if="dataList"
                                 :dataList="dataList"
                                 :query="query"
-                                :getData="getUserData"
+                                :getData="getData"
                             />
 
                             <div class="card-body data-table table-responsive p-0">
@@ -70,19 +70,19 @@
                                                     />
                                                 </a>
                                             </th>
-                                            <th style="width: 250px">{{ $helper.getLang('page.user.role') }}</th>
-                                            <th style="width: 250px">{{ $helper.getLang('page.user.name') }}</th>
-                                            <th style="width: 250px">{{ $helper.getLang('page.user.phone') }}</th>
-                                            <th style="width: 250px">{{ $helper.getLang('page.user.email') }}</th>
-                                            <th style="width: 250px">{{ $helper.getLang('page.user.login_status') }}</th>
-                                            <th style="width: 250px">{{ $helper.getLang('page.table.created_at') }}</th>
+                                            <th style="width: 250px">{{ $helpers.lang.get('page.user.role') }}</th>
+                                            <th style="width: 250px">{{ $helpers.lang.get('page.user.name') }}</th>
+                                            <th style="width: 250px">{{ $helpers.lang.get('page.user.phone') }}</th>
+                                            <th style="width: 250px">{{ $helpers.lang.get('page.user.email') }}</th>
+                                            <th style="width: 250px">{{ $helpers.lang.get('page.user.login_status') }}</th>
+                                            <th style="width: 250px">{{ $helpers.lang.get('page.table.created_at') }}</th>
                                             <th style="width: 100px"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-data" v-if="dataList && dataList.list.length > 0">
                                         <tr v-for="data, index in dataList.list">
                                             <td>{{ data.id }}</td>
-                                            <td>{{ $helper.getLang('page.user.role.' + (data.role_id == 0 ? 'admin' : 'user')) }}</td>
+                                            <td>{{ $helpers.lang.get('page.user.role.' + (data.role_id == 0 ? 'admin' : 'user')) }}</td>
                                             <td>{{ data.name }}</td>
                                             <td>{{ data.phone }}</td>
                                             <td>{{ data.email }}</td>
@@ -93,7 +93,7 @@
                                                         data.is_login == 1 ? 'alert-success' : 'alert-secondary'
                                                     ]"
                                                 >
-                                                    {{ $helper.getLang('page.user.login_status.' + (data.is_login == 1 ? 'logged' : 'not_logged')) }}
+                                                    {{ $helpers.lang.get('page.user.login_status.' + (data.is_login == 1 ? 'logged' : 'not_logged')) }}
                                                 </span>
                                             </td>
                                             <td>{{ data.created_at }}</td>
@@ -109,9 +109,27 @@
                                                     <div class="action-detail">
                                                         <a class="action-detail-btn" v-if="query.is_deleted == 0" @click="openForm($event, index, dataList.list[index])">
                                                             <i class="fas fa-eye"></i>
-                                                            <div class="icon-wrap">{{ $helper.getLang('button.show') }}</div>
+                                                            <div class="icon-wrap">{{ $helpers.lang.get('button.show') }}</div>
                                                         </a>
-                                                        <a class="action-detail-btn" v-bind:class="{ 'disabled' : ($helper.getAuth() == null ? false : ($helper.getAuth().user.id == data.id ? true : false)) }" @click="deleteData($event, data.id)">
+                                                        <a
+                                                            class="action-detail-btn"
+                                                            v-bind:class="{
+                                                                'disabled' : (
+                                                                    $helpers.store.getAuth() == null 
+                                                                    ?
+                                                                        false
+                                                                    :
+                                                                        (
+                                                                            $helpers.store.getAuth().user.id == data.id
+                                                                            ?
+                                                                                true
+                                                                            :
+                                                                                false
+                                                                        )
+                                                                )
+                                                            }"
+                                                            @click="deleteData($event, data.id)"
+                                                        >
                                                             <i 
                                                                 class="fas"
                                                                 v-bind:class="[
@@ -119,7 +137,7 @@
                                                                 ]"
                                                             />
                                                             <div class="icon-wrap">
-                                                                {{ $helper.getLang('button.' + (query.is_deleted == 0 ? 'delete' : 'restore')) }}
+                                                                {{ $helpers.lang.get('button.' + (query.is_deleted == 0 ? 'delete' : 'restore')) }}
                                                             </div>
                                                         </a>
                                                     </div>
@@ -129,7 +147,7 @@
                                     </tbody>
                                 </table>
                                 <div class="text-center no-data" v-if="dataList && dataList.list.length == 0">
-                                    {{ $helper.getLang('page.table.no_data') }}
+                                    {{ $helpers.lang.get('page.table.no_data') }}
                                 </div>
                             </div>
                         </div>
@@ -138,36 +156,36 @@
             </div>
         </section>
 
-        <UserInformationPopup
+        <UserPopup
             v-if="isForm"
 
+            :data="data"
             :closeForm="closeForm"
-            :userData="data"
-            :getUserData="getUserData"
+            :getData="getData"
         />
     </div>
 </template>
 
 <script>
     import TablePagination from '../../commons/pagination/TablePagination.vue';
-    import UserInformationPopup from './UserInformationPopup.vue';
+    import UserPopup from './UserPopup.vue';
 
     export default {
         name: "User",
         components: {
             TablePagination,
-            UserInformationPopup
+            UserPopup
         },
         data() {
             return {
                 dataList: null,
                 query: {
-                    limit: 15,
-                    page: 1,
-                    id_sort: "desc",
+                    limit: this.$constant.PAGINATION.LIMIT,
+                    page: this.$constant.PAGINATION.PAGE,
+                    id_sort: this.$constant.ORDER_BY.DESC,
                     information: "",
-                    is_login: 2,
-                    is_deleted: 0
+                    is_login: this.$constant.LOGIN_STATUS.ALL,
+                    is_deleted: this.$constant.IS_DELETE.NO
                 },
                 formDataError: {
                     message: ""
@@ -177,39 +195,39 @@
             };
         },
         mounted() {
-            this.$helper.getCurrentQuery(this.query);
+            this.$helpers.router.getCurrentQuery(this.query);
 
-            this.getUserData();
+            this.getData();
         },
         methods: {
-            async getUserData() {
-                this.$helper.setPageLoading(true);
-                await this.$store.dispatch("getUsers", {
-                    query: this.$helper.getQueryString(this.query),
+            async getData() {
+                this.$helpers.store.setPageLoading(true);
+                let form = {
+                    query: this.$helpers.router.getQueryString(this.query),
                     error: this.formDataError
-                })
-                .then(res => {
-                    this.dataList = res.data;
-                })
-                .catch(err => {
+                };
+
+                await this.$services.api.call("getUsers", form, (data) => {
+                    this.dataList = data;
                 });
-                this.$helper.setPageLoading(false);
+
+                this.$helpers.store.setPageLoading(false);
             },
 
             filter(e) {
                 e.preventDefault();
 
-                this.$helper.pushQueryUrl(this.query);
-                this.$helper.setQueryPage(this.query, this.dataList);
-                this.getUserData();
+                this.$helpers.router.pushQueryUrl(this.query);
+                this.$helpers.setQueryPage(this.query, this.dataList);
+                this.getData();
             },
 
             sortUserData(e, queryParam) {
                 e.preventDefault();
 
-                this.$helper.setQuerySort(this.query, queryParam);
-                this.$helper.pushQueryUrl(this.query);
-                this.getUserData();
+                this.$helpers.setQuerySort(this.query, queryParam);
+                this.$helpers.router.pushQueryUrl(this.query);
+                this.getData();
             },
 
             openForm(e, index, data) {
@@ -236,28 +254,25 @@
                 e.preventDefault();
 
                 if (this.$store.state.auth.user.id != id) {
-                    var alertMessage = this.$helper.getLang('messages.delete_action');
-                    var successMessage = this.$helper.getLang('messages.delete_success');
+                    var alertMessage = this.$helpers.lang.get('messages.delete_action');
+                    var successMessage = this.$helpers.lang.get('messages.delete_success');
 
-                    if (this.query.is_deleted == 1) {
-                        alertMessage = this.$helper.getLang('messages.restore_action');
-                        successMessage = this.$helper.getLang('messages.restore_success');
+                    if (this.query.is_deleted == this.$constant.IS_DELETE.YES) {
+                        alertMessage = this.$helpers.lang.get('messages.restore_action');
+                        successMessage = this.$helpers.lang.get('messages.restore_success');
                     }
 
                     if (confirm(alertMessage)) {
-                        this.$helper.setPageLoading(true);
-                        await this.$store.dispatch("deleteUser", {
+                        this.$helpers.store.setPageLoading(true);
+                        let form = {
                             id: id,
                             error: this.formDataError
-                        })
-                        .then(res => {
-                            this.$helper.setNotification(1, successMessage);
-                        })
-                        .catch(err => {
+                        }
 
-                        });
+                        await this.$services.api.call("deleteUser", form);
+                        this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SHOW, successMessage);
 
-                        this.getUserData();
+                        this.getData();
                     }
                 }
             }

@@ -10,15 +10,25 @@
         <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    {{ $helper.getAuth() == null ? '' : ($helper.getAuth().user.name == null ? $helper.getAuth().user.email : $helper.getAuth().user.name) }}
+                    {{ 
+                        $helpers.store.getAuth() == null 
+                        ?
+                            '' 
+                        : (
+                            $helpers.store.getAuth().user.name == null
+                            ? 
+                                $helpers.store.getAuth().user.email
+                            : 
+                                $helpers.store.getAuth().user.name) 
+                    }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <div class="dropdown-divider"></div>
                     <a href="#" class="dropdown-item">
-                        {{ $helper.getLang('layout.header.account_information') }}
+                        {{ $helpers.lang.get('layout.header.account_information') }}
                     </a>
                     <a href="#" class="dropdown-item">
-                        {{ $helper.getLang('layout.header.change_password') }}
+                        {{ $helpers.lang.get('layout.header.change_password') }}
                     </a>
                     <div class="dropdown-divider"></div>
                     <!-- <a href="#" class="dropdown-footer">
@@ -31,7 +41,7 @@
                     <a href="#" class="dropdown-footer">
                         <form v-on:submit="logout">
                             <button type="submit" class="border-0 bg-danger d-flex justify-content-center align-items-center w-100" style="border-radius: 3px">
-                                {{ $helper.getLang('layout.header.logout') }}
+                                {{ $helpers.lang.get('layout.header.logout') }}
                             </button>
                         </form>
                     </a>
@@ -48,14 +58,14 @@
             async logout(e) {
                 e.preventDefault();
 
-                this.$helper.setPageLoading(true);
+                this.$helpers.store.setPageLoading(true);
                 await this.$store.dispatch('logout', {
                     error: {
                         message: ''
                     }
                 })
                 .then(res => {
-                    this.$helper.setAuth({
+                    this.$helpers.store.setAuth({
                         user: null,
                         access_token: null
                     });
@@ -63,7 +73,7 @@
                 .catch(err => {
                     
                 });
-                this.$helper.setPageLoading(false);
+                this.$helpers.store.setPageLoading(false);
                 
                 this.$router.push({path: '/admin/login' });
             }

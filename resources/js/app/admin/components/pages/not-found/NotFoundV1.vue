@@ -1,7 +1,7 @@
 <template>
     <div class="content-wrapper">
         <div class="content">
-            {{ $helper.getLang('page.not_found.v1') }}
+            {{ $helpers.lang.get('page.not_found.v1') }}
         </div>
     </div>
 </template>

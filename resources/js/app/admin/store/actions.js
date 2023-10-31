@@ -5,10 +5,10 @@ let actions = {
     login: authentication.login,
     logout: authentication.logout,
 
-    getUsers: user.getUsers,
-    createUser: user.createUser,
-    updateUser: user.updateUser,
-    deleteUser: user.deleteUser,
+    getUsers: user.get,
+    createUser: user.create,
+    updateUser: user.update,
+    deleteUser: user.delete,
 }
 
 export default actions;

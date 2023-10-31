@@ -6,6 +6,7 @@
                 $store.state.notification.success == 1 ? 'alert-success' : 'alert-danger'
             ]"
         >
+            <button type="button" class="close" @click="closeNotification">×</button>
             <h5>
                 <i 
                     class="icon fas"
@@ -13,7 +14,7 @@
                         $store.state.notification.success == 1 ? 'fa-check' : 'fa-ban'
                     ]"
                 />
-                {{ $store.state.notification.success == 1 ? this.$helper.getLang('layout.notification') : this.$helper.getLang('layout.notification.alert') }}
+                {{ $store.state.notification.success == 1 ? this.$helpers.lang.get('layout.notification') : this.$helpers.lang.get('layout.notification.alert') }}
             </h5>
             {{$store.state.notification.message}}
         </div>
@@ -47,10 +48,17 @@
 
             move() {
                 if (this.proccessPercent <= 0) {
-                    this.$helper.setNotification(0, null);
+                    this.$helpers.store.setNotification(0, null);
                     clearInterval(this.intervalId);
                 } else {
                     this.proccessPercent -= 1;
+                }
+            },
+
+            closeNotification() {
+                if (this.intervalId) {
+                    this.$helpers.store.setNotification(0, null);
+                    clearInterval(this.intervalId);
                 }
             }
         }

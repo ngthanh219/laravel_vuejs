@@ -36,7 +36,7 @@
             }
         },
         mounted() {
-            this.$helper.setNotification(0, null);
+            this.$helpers.store.setNotification(0, null);
             this.middleware();
         },
         updated() {
@@ -44,10 +44,10 @@
         },
         methods: {
             middleware() {
-                var auth = this.$helper.getAuth();
+                var auth = this.$helpers.store.getAuth();
 
                 if (auth == null) {
-                    this.$helper.redirectPage('login');
+                    this.$helpers.router.redirectAdmin('login');
                 } else {
                     this.isAuth = true;
                 }

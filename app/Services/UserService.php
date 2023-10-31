@@ -132,7 +132,7 @@ class UserService extends BaseService
                 'role_id' => $request->role_id
             ];
 
-            if ($request->is_change_password) {
+            if ($request->is_change_password && $request->password) {
                 $updatedData['password'] = bcrypt($request->password);
             }
 

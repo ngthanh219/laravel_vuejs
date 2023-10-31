@@ -1,20 +1,21 @@
-import services from "./index.js";
+import api from "./index.js";
 
+const prefix = 'users';
 let user = {
-    getUsers({state}, form) {
-        return services.callApi({state}, 'get', 'users', form);
+    get({state}, form) {
+        return api.handle({state}, 'get', prefix, form);
     },
 
-    createUser({state}, form) {
-        return services.callApi({state}, 'post', 'users', form);
+    create({state}, form) {
+        return api.handle({state}, 'post', prefix, form);
     },
 
-    updateUser({state}, form) {
-        return services.callApi({state}, 'put', 'users', form);
+    update({state}, form) {
+        return api.handle({state}, 'put', prefix, form);
     },
 
-    deleteUser({state}, form) {
-        return services.callApi({state}, 'delete', 'users', form);
+    delete({state}, form) {
+        return api.handle({state}, 'delete', prefix, form);
     },
 }
 
