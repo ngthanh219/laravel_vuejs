@@ -59,6 +59,11 @@
                                 <table class="table text-center table-hover table-head-fixed text-nowrap">
                                     <thead>
                                         <tr>
+                                            <th>
+                                                <div class="custom-checkbox" @click="checkBox">
+                                                    <input type="checkbox" :checked="isCheckAll">
+                                                </div>
+                                            </th>
                                             <th style="width: 25px">
                                                 <a href="/" @click="sortUserData($event, 'id_sort')">
                                                     ID
@@ -81,6 +86,11 @@
                                     </thead>
                                     <tbody class="table-data" v-if="dataList && dataList.list.length > 0">
                                         <tr v-for="data, index in dataList.list">
+                                            <td>
+                                                <div class="custom-checkbox" @click="checkBox($event, data.id)">
+                                                    <input type="checkbox" :checked="isCheckAll || action.array.includes(data.id)">
+                                                </div>
+                                            </td>
                                             <td>{{ data.id }}</td>
                                             <td>{{ $helpers.lang.get('page.user.role.' + (data.role_id == 0 ? 'admin' : 'user')) }}</td>
                                             <td>{{ data.name }}</td>
@@ -191,7 +201,12 @@
                     message: ""
                 },
                 isForm: false,
-                data: null
+                data: null,
+                isCheckAll: false,
+                action: {
+                    type: this.$constant.USER.ACTION_TYPE.DELETE,
+                    array: []
+                }
             };
         },
         mounted() {
@@ -274,6 +289,26 @@
 
                         this.getData();
                     }
+                }
+            },
+
+            checkBox(e, id = null) {
+                if (id == null) {
+                    this.isCheckAll = this.isCheckAll ? false : true;
+
+                    if (!this.isCheckAll) {
+                        this.action.array = [];
+                    } else {
+                        this.action.array = this.dataList.list.map(obj => obj.id);
+                    }
+                } else {
+                    if (this.action.array.includes(id)) {
+                        this.action.array = this.action.array.filter(item => item !== id);
+                    } else {
+                        this.action.array.push(id);
+                    }
+
+                    this.isCheckAll = this.action.array.length < this.dataList.list.length ? false : true;
                 }
             }
         }

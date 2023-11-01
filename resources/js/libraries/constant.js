@@ -30,6 +30,10 @@ const constant = {
             LOGGED: 1,
             ALL: 2
         },
+        ACTION_TYPE: {
+            DELETE: 0,
+            RESTORE: 1
+        }
     }
 }
 
