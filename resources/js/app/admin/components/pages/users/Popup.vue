@@ -16,15 +16,15 @@
                                         <div class="form-group">
                                             <label>{{ $helpers.lang.get('page.user.login_status') }}</label>
                                             <select class="form-control" v-model="formData.is_login">
-                                                <option :value="$constant.LOGIN_STATUS.NOT_LOGGED">{{ $helpers.lang.get('page.user.login_status.not_logged') }}</option>
-                                                <option :value="$constant.LOGIN_STATUS.LOGGED">{{ $helpers.lang.get('page.user.login_status.logged') }}</option>
+                                                <option :value="$constant.USER.LOGIN_STATUS.NOT_LOGGED">{{ $helpers.lang.get('page.user.login_status.not_logged') }}</option>
+                                                <option :value="$constant.USER.LOGIN_STATUS.LOGGED">{{ $helpers.lang.get('page.user.login_status.logged') }}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label>{{ $helpers.lang.get('page.user.role') }}</label>
                                             <select class="form-control" v-model="formData.role_id">
-                                                <option :value="$constant.ROLE.ADMIN">{{ $helpers.lang.get('page.user.role.admin') }}</option>
-                                                <option :value="$constant.ROLE.USER">{{ $helpers.lang.get('page.user.role.user') }}</option>
+                                                <option :value="$constant.USER.ROLE.ADMIN">{{ $helpers.lang.get('page.user.role.admin') }}</option>
+                                                <option :value="$constant.USER.ROLE.USER">{{ $helpers.lang.get('page.user.role.user') }}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -41,18 +41,18 @@
                                         </div>
                                         <div class="form-group" v-if="data != null">
                                             <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input" type="checkbox" id="customCheckbox2" v-model="formData.is_change_password" :checked="formData.is_change_password == IS_CHANGE_PASSWORD.YES">
+                                                <input class="custom-control-input" type="checkbox" id="customCheckbox2" v-model="formData.is_change_password" :checked="formData.is_change_password == $constant.USER.IS_CHANGE_PASSWORD.YES">
                                                 <label for="customCheckbox2" class="custom-control-label cursor-pointer">{{ $helpers.lang.get('page.user.form.change_password') }}</label>
                                             </div>
                                         </div>
-                                        <div class="form-group" v-if="formData.is_change_password == IS_CHANGE_PASSWORD.YES || data == null">
+                                        <div class="form-group" v-if="formData.is_change_password == $constant.USER.IS_CHANGE_PASSWORD.YES || data == null">
                                             <label>{{ $helpers.lang.get('page.user.password') }}</label>
                                             <input type="text" class="form-control form-control-border" :placeholder="$helpers.lang.get('page.form.typing')" v-model="formData.password">
                                         </div>
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary mr-2" v-bind:class="{
-                                            disabled: !(this.$helpers.checkChangeFormData(data, formData) || formData.is_change_password == IS_CHANGE_PASSWORD.YES)
+                                            disabled: !(this.$helpers.checkChangeFormData(data, formData) || formData.is_change_password == $constant.USER.IS_CHANGE_PASSWORD.YES)
                                         }">
                                             {{ $helpers.lang.get('button.' + (data ? 'update' : 'create')) }}
                                         </button>
@@ -71,12 +71,6 @@
 </template>
 
 <script>
-    const DEFAULT_PASSWORD = '123456';
-    const IS_CHANGE_PASSWORD = {
-        NO: 0,
-        YES: 1
-    };
-
     export default {
         name: "UserPopup",
         props: {
@@ -93,8 +87,8 @@
                     phone: null,
                     is_login: null,
                     role_id: null,
-                    is_change_password: IS_CHANGE_PASSWORD.NO,
-                    password: DEFAULT_PASSWORD
+                    is_change_password: this.$constant.USER.IS_CHANGE_PASSWORD.NO,
+                    password: this.$constant.USER.DEFAULT_PASSWORD
                 },
                 formDataError: {
                     message: '',
@@ -117,8 +111,8 @@
                 if (this.data) {
                     this.$helpers.mergeArrayData(this.data, this.formData)
                 } else {
-                    this.formData.is_login = this.$constant.LOGIN_STATUS.NOT_LOGGED;
-                    this.formData.role_id = this.$constant.ROLE.USER;
+                    this.formData.is_login = this.$constant.USER.LOGIN_STATUS.NOT_LOGGED;
+                    this.formData.role_id = this.$constant.USER.ROLE.USER;
                 }
             }, 200);
         },
@@ -138,7 +132,7 @@
                 if (this.data) {
                     if (
                         this.$helpers.checkChangeFormData(this.data, this.formData) ||
-                        this.formData.is_change_password == IS_CHANGE_PASSWORD.YES
+                        this.formData.is_change_password == this.$constant.USER.IS_CHANGE_PASSWORD.YES
                     ) {
                         this.$helpers.store.setPageLoading(true);
                         await this.update();
@@ -182,8 +176,8 @@
                 };
 
                 await this.$services.api.call("updateUser", form, (data) => {
-                    this.formData.is_change_password = IS_CHANGE_PASSWORD.NO;
-                    this.formData.password = DEFAULT_PASSWORD;
+                    this.formData.is_change_password = this.$constant.USER.IS_CHANGE_PASSWORD.NO;
+                    this.formData.password = this.$constant.USER.DEFAULT_PASSWORD;
                     this.$helpers.mergeArrayData(this.formData, this.data);
                     this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SHOW, this.$helpers.lang.get('messages.update_success'));
                 });

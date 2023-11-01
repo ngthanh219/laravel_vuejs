@@ -1,7 +1,7 @@
 import Login from "../components/pages/auth/Login.vue";
 import Layout from "../components/Layout.vue";
 import NotFoundV1 from "../components/pages/not-found/NotFoundV1.vue";
-import User from "../components/pages/users/User.vue";
+import UserList from "../components/pages/users/List.vue";
 
 const routes = [
     {
@@ -16,8 +16,8 @@ const routes = [
         children: [
             {
                 path: 'users',
-                name: 'User',
-                component: User
+                name: 'UserList',
+                component: UserList
             },
             {
                 path: ':pathMatch(.*)*',

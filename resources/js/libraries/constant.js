@@ -11,24 +11,25 @@ const constant = {
         NO: 0,
         YES: 1
     },
-    LOGIN_STATUS: {
-        NOT_LOGGED: 0,
-        LOGGED: 1,
-        ALL: 2
-    },
     NOTIFICATION: {
         HIDDEN: 0,
         SHOW: 1
     },
-    ROLE: {
-        ADMIN: 0,
-        USER: 1
-    },
     USER: {
+        ROLE: {
+            ADMIN: 0,
+            USER: 1
+        },
+        DEFAULT_PASSWORD: '123456',
         IS_CHANGE_PASSWORD: {
             NO: 0,
             YES: 1
-        }
+        },
+        LOGIN_STATUS: {
+            NOT_LOGGED: 0,
+            LOGGED: 1,
+            ALL: 2
+        },
     }
 }
 

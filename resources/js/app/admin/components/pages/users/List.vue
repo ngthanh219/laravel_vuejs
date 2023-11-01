@@ -28,9 +28,9 @@
                         <div class="form-group input-group-sm">
                             <label>{{ $helpers.lang.get('page.user.login_status') }}</label>
                             <select class="form-control" v-model="query.is_login">
-                                <option :value="$constant.LOGIN_STATUS.ALL">{{ $helpers.lang.get('page.user.login_status.all') }}</option>
-                                <option :value="$constant.LOGIN_STATUS.NOT_LOGGED">{{ $helpers.lang.get('page.user.login_status.not_logged') }}</option>
-                                <option :value="$constant.LOGIN_STATUS.LOGGED">{{ $helpers.lang.get('page.user.login_status.logged') }}</option>
+                                <option :value="$constant.USER.LOGIN_STATUS.ALL">{{ $helpers.lang.get('page.user.login_status.all') }}</option>
+                                <option :value="$constant.USER.LOGIN_STATUS.NOT_LOGGED">{{ $helpers.lang.get('page.user.login_status.not_logged') }}</option>
+                                <option :value="$constant.USER.LOGIN_STATUS.LOGGED">{{ $helpers.lang.get('page.user.login_status.logged') }}</option>
                             </select>
                         </div>
                     </div>
@@ -168,10 +168,10 @@
 
 <script>
     import TablePagination from '../../commons/pagination/TablePagination.vue';
-    import UserPopup from './UserPopup.vue';
+    import UserPopup from './Popup.vue';
 
     export default {
-        name: "User",
+        name: "UserList",
         components: {
             TablePagination,
             UserPopup
@@ -184,7 +184,7 @@
                     page: this.$constant.PAGINATION.PAGE,
                     id_sort: this.$constant.ORDER_BY.DESC,
                     information: "",
-                    is_login: this.$constant.LOGIN_STATUS.ALL,
+                    is_login: this.$constant.USER.LOGIN_STATUS.ALL,
                     is_deleted: this.$constant.IS_DELETE.NO
                 },
                 formDataError: {
