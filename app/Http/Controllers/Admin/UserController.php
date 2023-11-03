@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ActionMultiDataRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\GetUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -37,5 +38,10 @@ class UserController extends Controller
     public function destroy(Request $request, $id)
     {
         return $this->userService->destroy($request, $id);
+    }
+
+    public function actionMultiData(ActionMultiDataRequest $request)
+    {
+        return $this->userService->actionMultiData($request);
     }
 }

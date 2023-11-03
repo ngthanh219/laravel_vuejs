@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Helpers\GeneralHelper;
 use App\Libraries\Constant;
 use App\Libraries\ErrorCode;
+use App\Libraries\HttpStatus;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserService extends BaseService
 {
@@ -56,9 +58,9 @@ class UserService extends BaseService
 
             return $this->responseSuccess($data);
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
-            return $this->responseError(__('messages.system.server_error'), 500, ErrorCode::SERVER_ERROR);
+            return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }
     }
 
@@ -67,12 +69,12 @@ class UserService extends BaseService
         try {
             $existEmail = $this->user->where('email', $request->email)->withTrashed()->first();
             if ($existEmail) {
-                return $this->responseError(__('messages.user.email_exist'), 400, ErrorCode::PARAM_INVALID);
+                return $this->responseError(__('messages.user.email_exist'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
             }
 
             $existPhone = $this->user->where('phone', $request->phone)->withTrashed()->first();
             if ($existPhone) {
-                return $this->responseError(__('messages.user.phone_exist'), 400, ErrorCode::PARAM_INVALID);
+                return $this->responseError(__('messages.user.phone_exist'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
             }
 
             $newData = [
@@ -81,7 +83,7 @@ class UserService extends BaseService
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
-                'email_verified_at' => now(),
+                'email_verified_at' => $request->email_verified_at == Constant::IS_VERIFIED_EMAIL ? now() : null,
                 'is_login' => $request->is_login
             ];
 
@@ -89,9 +91,9 @@ class UserService extends BaseService
 
             return $this->responseSuccess($data);
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
-            return $this->responseError(__('messages.system.server_error'), 500, ErrorCode::SERVER_ERROR);
+            return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }
     }
 
@@ -101,7 +103,7 @@ class UserService extends BaseService
             $user = $this->user->find($id);
             
             if (!$user) {
-                return $this->responseError(__('messages.user.not_exist'), 400, ErrorCode::PARAM_INVALID);
+                return $this->responseError(__('messages.user.not_exist'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
             }
 
             if ($request->email !== $user->email) {
@@ -110,7 +112,7 @@ class UserService extends BaseService
                     ->first();
 
                 if ($existEmail) {
-                    return $this->responseError(__('messages.user.email_exist'), 400, ErrorCode::PARAM_INVALID);
+                    return $this->responseError(__('messages.user.email_exist'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
                 }
             }
 
@@ -120,7 +122,7 @@ class UserService extends BaseService
                     ->first();
 
                 if ($existPhone) {
-                    return $this->responseError(__('messages.user.phone_exist'), 400, ErrorCode::PARAM_INVALID);
+                    return $this->responseError(__('messages.user.phone_exist'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
                 }
             }
 
@@ -129,7 +131,8 @@ class UserService extends BaseService
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'is_login' => $request->is_login,
-                'role_id' => $request->role_id
+                'role_id' => $request->role_id,
+                'email_verified_at' => $request->email_verified_at == Constant::IS_VERIFIED_EMAIL ? now() : null
             ];
 
             if ($request->is_change_password && $request->password) {
@@ -140,9 +143,9 @@ class UserService extends BaseService
 
             return $this->responseSuccess($user);
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
-            return $this->responseError(__('messages.system.server_error'), 500, ErrorCode::SERVER_ERROR);
+            return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }
     }
 
@@ -155,7 +158,7 @@ class UserService extends BaseService
                 $user = $this->user->withTrashed()->where('id', $id)->first();
 
                 if (!$user) {
-                    return $this->responseError(__('messages.user.not_exist'), 400, ErrorCode::PARAM_INVALID);
+                    return $this->responseError(__('messages.user.not_exist'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
                 }
 
                 $user->restore();
@@ -165,9 +168,62 @@ class UserService extends BaseService
 
             return $this->responseSuccess();
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
-            return $this->responseError(__('messages.system.server_error'), 500, ErrorCode::SERVER_ERROR);
+            return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
+        }
+    }
+
+    public function actionMultiData($request)
+    {
+        try {
+            $type = $request->action_type;
+            $idArray = json_decode($request->id_array, true);
+
+            if (gettype($idArray) != 'array') {
+                return $this->responseError(__('messages.id_array.invalid'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
+            }
+
+            foreach ($idArray as $id) {
+                if (!is_int($id)) {
+                    return $this->responseError(__('messages.id_array.item_not_int'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
+                }
+            }
+
+            $existId = $this->user->withTrashed()->whereIn('id', $idArray)->count();
+            if (count($idArray) > $existId) {
+                return $this->responseError(__('messages.id_array.invalid'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
+            }
+        } catch (\Exception $ex) {
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_LOGIC, $ex->getMessage());
+
+            return $this->responseError(__('messages.system.logic_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
+        }
+
+        DB::beginTransaction();
+        try {
+            switch ($type) {
+                case Constant::ACTION_TYPE_DELETE:
+                    $this->user->whereIn('id', $idArray)->delete();
+                    DB::commit();
+                    break;
+
+                case Constant::ACTION_TYPE_RESTORE:
+                    $this->user->withTrashed()->whereIn('id', $idArray)->restore();
+                    DB::commit();
+                    break;
+                
+                default:
+                    DB::rollBack();
+                    break;
+            }
+
+            return $this->responseSuccess();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
+
+            return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }
     }
 }

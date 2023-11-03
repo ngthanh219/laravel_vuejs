@@ -29,4 +29,8 @@ return [
         "phone_exist" => "Số điện thoại này đã được sử dụng",
         "expired_verification_code" => "Mã xác thực đã hết hạn",
     ],
+    "id_array" => [
+        "invalid" => "Danh sách id không phải mảng",
+        "item_not_int" => "Một trong những id không phải số"
+    ]
 ];

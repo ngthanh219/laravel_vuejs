@@ -28,6 +28,13 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
+                                            <label>{{ $helpers.lang.get('page.user.email_verified_at') }}</label>
+                                            <select class="form-control" v-model="formData.email_verified_at">
+                                                <option :value="$constant.USER.IS_VERIFIED_EMAIL.NO">{{ $helpers.lang.get('page.user.email_verified_at.no') }}</option>
+                                                <option :value="$constant.USER.IS_VERIFIED_EMAIL.YES">{{ $helpers.lang.get('page.user.email_verified_at.yes') }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label>{{ $helpers.lang.get('page.user.name') }}</label>
                                             <input type="text" class="form-control form-control-border" :placeholder="$helpers.lang.get('page.form.typing')" v-model="formData.name">
                                         </div>
@@ -87,6 +94,7 @@
                     phone: null,
                     is_login: null,
                     role_id: null,
+                    email_verified_at: this.$constant.USER.IS_VERIFIED_EMAIL.NO,
                     is_change_password: this.$constant.USER.IS_CHANGE_PASSWORD.NO,
                     password: this.$constant.USER.DEFAULT_PASSWORD
                 },
@@ -97,6 +105,7 @@
                     phone: '',
                     is_login: '',
                     role_id: '',
+                    email_verified_at: '',
                     is_change_password: '',
                     password: '',
                 }

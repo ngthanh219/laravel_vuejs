@@ -124,6 +124,18 @@ const page = {
                 'en': 'Logged'
             },
         },
+        'email_verified_at': {
+            'vi': 'Xác thực',
+            'en': 'Verify',
+            'no': {
+                'vi': 'Chưa xác thực',
+                'en': 'Not verified'
+            },
+            'yes': {
+                'vi': 'Đã xác thực',
+                'en': 'Verified'
+            },
+        },
         'form': {
             'create_new_user': {
                 'vi': 'Thêm mới người dùng',
@@ -136,6 +148,18 @@ const page = {
             'change_password': {
                 'vi': 'Đổi mật khẩu',
                 'en': 'Change password'
+            }
+        },
+        'action': {
+            'vi': 'Hành động',
+            'en': 'Action',
+            'delete': {
+                'vi': 'Xóa dữ liệu',
+                'en': 'Delete data'
+            },
+            'restore': {
+                'vi': 'Khôi phục dữ liệu',
+                'en': 'Restore data'
             }
         }
     },

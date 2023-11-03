@@ -29,4 +29,8 @@ return [
         "phone_exist" => "This phone was used by other user",
         "expired_verification_code" => "Verification code has expired",
     ],
+    "id_array" => [
+        "invalid" => "List id is invalid",
+        "item_not_int" => "One of list id is not a number"
+    ]
 ];

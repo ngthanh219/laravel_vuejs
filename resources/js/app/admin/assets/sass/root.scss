@@ -2,8 +2,27 @@ body {
     overflow-x: hidden;
 }
 
+.wmc {
+    width: max-content;
+    position: relative;
+}
+
+.wmc::before {
+    content: '';
+    position: absolute;
+    border-right: 1px solid #ccc;
+    top: 24px;
+    right: -9px;
+    height: 30px;
+}
+
+.wmc.b::before {
+    right: -5px;
+}
+
 .card-body.data-table {
     height: 600px;
+    padding-bottom: 10px !important;
 
     .no-data {
         margin-top: 30px;
@@ -21,6 +40,37 @@ body {
             cursor: pointer;
         }
     }
+
+    .verify-box {
+        position: relative;
+
+        .verified {
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 13px;
+            height: 13px;
+            position: absolute;
+            top: 18px;
+            left: -4px;
+            padding: 7px;
+            
+            i {
+                font-size: 10px;
+            }
+        }
+
+        .yes {
+            background: #28a745;
+        }
+
+        .no {
+            background: #6c757d;
+        }
+    }
+    
 }
 
 .data-filter {
@@ -193,6 +243,48 @@ body {
 
 .table-action:hover .action-detail {
     display: flex;
+}
+
+tr:last-child {
+    .action-detail::before {
+        border-top-color: white;
+        border-bottom-color: transparent;
+        top: unset;
+        bottom: -14px;
+    }
+
+    .action-detail::after {
+        border-top-color: #E2E2E2;
+        border-bottom-color: transparent;
+        top: unset;
+        bottom: -15px;
+    }
+
+    .table-action:hover .action-detail  {
+        top: unset;
+        bottom: 25px;
+    }
+}
+
+tr:only-child {
+    .action-detail::before {
+        border-top-color: transparent;
+        border-bottom-color: white;
+        top: -14px;
+        bottom: unset;
+    }
+
+    .action-detail::after {
+        border-top-color: transparent;
+        border-bottom-color: #E2E2E2;
+        top: -15px;
+        bottom: unset;
+    }
+
+    .table-action:hover .action-detail  {
+        top: 25px;
+        bottom: unset;
+    }
 }
 
 .page-link.disabled {

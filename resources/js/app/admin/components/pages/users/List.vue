@@ -17,26 +17,40 @@
                         </ol>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="form-group input-group-sm">
-                            <label>{{ $helpers.lang.get('page.user.filter.information') }}</label>
-                            <input type="text" class="form-control" :placeholder="$helpers.lang.get('page.user.filter.information.placeholder')" v-model="query.information">
-                        </div>
+                <div class="row" v-if="action.array.length == 0">
+                    <div class="form-group input-group-sm wmc ml-2 mr-2">
+                        <span>{{ $helpers.lang.get('page.user.filter.information') }}</span>
+                        <input type="text" class="form-control" :placeholder="$helpers.lang.get('page.user.filter.information.placeholder')" v-model="query.information">
                     </div>
-                    <div class="col-md-2">
-                        <div class="form-group input-group-sm">
-                            <label>{{ $helpers.lang.get('page.user.login_status') }}</label>
-                            <select class="form-control" v-model="query.is_login">
-                                <option :value="$constant.USER.LOGIN_STATUS.ALL">{{ $helpers.lang.get('page.user.login_status.all') }}</option>
-                                <option :value="$constant.USER.LOGIN_STATUS.NOT_LOGGED">{{ $helpers.lang.get('page.user.login_status.not_logged') }}</option>
-                                <option :value="$constant.USER.LOGIN_STATUS.LOGGED">{{ $helpers.lang.get('page.user.login_status.logged') }}</option>
-                            </select>
-                        </div>
+                    <div class="form-group input-group-sm wmc ml-2 mr-2">
+                        <span>{{ $helpers.lang.get('page.user.login_status') }}</span>
+                        <select class="form-control" v-model="query.is_login">
+                            <option :value="$constant.USER.LOGIN_STATUS.ALL">{{ $helpers.lang.get('page.user.login_status.all') }}</option>
+                            <option :value="$constant.USER.LOGIN_STATUS.NOT_LOGGED">{{ $helpers.lang.get('page.user.login_status.not_logged') }}</option>
+                            <option :value="$constant.USER.LOGIN_STATUS.LOGGED">{{ $helpers.lang.get('page.user.login_status.logged') }}</option>
+                        </select>
                     </div>
-                    <div class="col-md-6 d-flex align-items-end">
-                        <div class="form-group input-group-sm">
+                    <div class="form-group input-group-sm ml-2 mr-2 d-flex align-items-end">
+                        <div class="input-group-sm">
                             <a :href="$helpers.router.getQueryString(query)" class="btn btn-primary" @click="filter">{{ $helpers.lang.get('button.filter') }}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" v-else>
+                    <div class="form-group input-group-sm wmc b ml-2 mr-2" v-if="query.is_deleted == $constant.IS_DELETE.NO">
+                        <div class="input-group-sm mr-2">
+                            <span>{{ $helpers.lang.get('page.user.action.delete') }}</span>
+                            <button type="button" class="btn btn-block btn-outline-danger" @click="actionMultiData($event, $constant.USER.ACTION_TYPE.DELETE)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group input-group-sm ml-2 mr-2" v-if="query.is_deleted == $constant.IS_DELETE.YES">
+                        <div class="input-group-sm mr-2">
+                            <span>{{ $helpers.lang.get('page.user.action.restore') }}</span>
+                            <button type="button" class="btn btn-block btn-outline-primary" @click="actionMultiData($event, $constant.USER.ACTION_TYPE.RESTORE)">
+                                <i class="fas fa-window-restore"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -56,7 +70,7 @@
                             />
 
                             <div class="card-body data-table table-responsive p-0">
-                                <table class="table text-center table-hover table-head-fixed text-nowrap">
+                                <table class="table table-hover table-head-fixed text-nowrap">
                                     <thead>
                                         <tr>
                                             <th>
@@ -65,7 +79,7 @@
                                                 </div>
                                             </th>
                                             <th style="width: 25px">
-                                                <a href="/" @click="sortUserData($event, 'id_sort')">
+                                                <a href="/" @click="sortData($event, 'id_sort')">
                                                     ID
                                                     <i
                                                         class="id-icon fas"
@@ -84,7 +98,7 @@
                                             <th style="width: 100px"></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="table-data" v-if="dataList && dataList.list.length > 0">
+                                    <tbody class="table-data" v-if="dataList && dataList.list.length > $constant.NO_DATA">
                                         <tr v-for="data, index in dataList.list">
                                             <td>
                                                 <div class="custom-checkbox" @click="checkBox($event, data.id)">
@@ -92,18 +106,28 @@
                                                 </div>
                                             </td>
                                             <td>{{ data.id }}</td>
-                                            <td>{{ $helpers.lang.get('page.user.role.' + (data.role_id == 0 ? 'admin' : 'user')) }}</td>
+                                            <td>{{ $helpers.lang.get('page.user.role.' + (data.role_id == $constant.USER.ROLE.ADMIN ? 'admin' : 'user')) }}</td>
                                             <td>{{ data.name }}</td>
                                             <td>{{ data.phone }}</td>
-                                            <td>{{ data.email }}</td>
-                                            <td>
-                                                <span 
-                                                    class="badge" 
+                                            <td class="verify-box">
+                                                <a
+                                                    class="verified"
                                                     v-bind:class="[
-                                                        data.is_login == 1 ? 'alert-success' : 'alert-secondary'
+                                                        data.email_verified_at == $constant.USER.IS_VERIFIED_EMAIL.YES ? 'yes' : 'no'
                                                     ]"
                                                 >
-                                                    {{ $helpers.lang.get('page.user.login_status.' + (data.is_login == 1 ? 'logged' : 'not_logged')) }}
+                                                    <i class="fa fa-check"></i>
+                                                </a>
+                                                {{ data.email }}
+                                            </td>
+                                            <td>
+                                                <span 
+                                                    class="badge"
+                                                    v-bind:class="[
+                                                        data.is_login == $constant.USER.LOGIN_STATUS.LOGGED ? 'alert-success' : 'alert-secondary'
+                                                    ]"
+                                                >
+                                                    {{ $helpers.lang.get('page.user.login_status.' + (data.is_login == $constant.USER.LOGIN_STATUS.LOGGED ? 'logged' : 'not_logged')) }}
                                                 </span>
                                             </td>
                                             <td>{{ data.created_at }}</td>
@@ -117,7 +141,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="action-detail">
-                                                        <a class="action-detail-btn" v-if="query.is_deleted == 0" @click="openForm($event, index, dataList.list[index])">
+                                                        <a class="action-detail-btn" v-if="query.is_deleted == $constant.IS_DELETE.NO" @click="openForm($event, index, dataList.list[index])">
                                                             <i class="fas fa-eye"></i>
                                                             <div class="icon-wrap">{{ $helpers.lang.get('button.show') }}</div>
                                                         </a>
@@ -143,11 +167,11 @@
                                                             <i 
                                                                 class="fas"
                                                                 v-bind:class="[
-                                                                    query.is_deleted == 0 ? 'fa-trash' : 'fa-window-restore'
+                                                                    query.is_deleted == $constant.IS_DELETE.NO ? 'fa-trash' : 'fa-window-restore'
                                                                 ]"
                                                             />
                                                             <div class="icon-wrap">
-                                                                {{ $helpers.lang.get('button.' + (query.is_deleted == 0 ? 'delete' : 'restore')) }}
+                                                                {{ $helpers.lang.get('button.' + (query.is_deleted == $constant.IS_DELETE.NO ? 'delete' : 'restore')) }}
                                                             </div>
                                                         </a>
                                                     </div>
@@ -156,7 +180,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div class="text-center no-data" v-if="dataList && dataList.list.length == 0">
+                                <div class="text-center no-data" v-if="dataList && dataList.list.length == $constant.NO_DATA">
                                     {{ $helpers.lang.get('page.table.no_data') }}
                                 </div>
                             </div>
@@ -177,6 +201,10 @@
 </template>
 
 <script>
+    const ACTION_GET = 'getUsers';
+    const ACTION_DELETE = 'deleteUser';
+    const ACTION_MULTI_DATA = 'actionMultiUser';
+
     import TablePagination from '../../commons/pagination/TablePagination.vue';
     import UserPopup from './Popup.vue';
 
@@ -222,11 +250,17 @@
                     error: this.formDataError
                 };
 
-                await this.$services.api.call("getUsers", form, (data) => {
+                await this.$services.api.call(ACTION_GET, form, (data) => {
                     this.dataList = data;
                 });
 
+                this.clearParams();
                 this.$helpers.store.setPageLoading(false);
+            },
+
+            clearParams() {
+                this.isCheckAll = false;
+                this.action.array = [];
             },
 
             filter(e) {
@@ -237,7 +271,7 @@
                 this.getData();
             },
 
-            sortUserData(e, queryParam) {
+            sortData(e, queryParam) {
                 e.preventDefault();
 
                 this.$helpers.setQuerySort(this.query, queryParam);
@@ -284,7 +318,7 @@
                             error: this.formDataError
                         }
 
-                        await this.$services.api.call("deleteUser", form);
+                        await this.$services.api.call(ACTION_DELETE, form);
                         this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SHOW, successMessage);
 
                         this.getData();
@@ -309,6 +343,24 @@
                     }
 
                     this.isCheckAll = this.action.array.length < this.dataList.list.length ? false : true;
+                }
+            },
+
+            async actionMultiData(e, type) {
+                e.preventDefault();
+
+                if (this.action.array.length > this.$constant.NO_DATA) {
+                    this.action.type = type;
+                    let form = {
+                        request: {
+                            action_type: type,
+                            id_array: JSON.stringify(this.action.array)
+                        }
+                    };
+
+                    this.$helpers.store.setPageLoading(true);
+                    await this.$services.api.call(ACTION_MULTI_DATA, form);
+                    this.getData();
                 }
             }
         }

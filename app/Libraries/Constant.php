@@ -19,4 +19,13 @@ class Constant
     const IS_CHANGE_PASSWORD = 1;
 
     const IS_DELETED = 1;
+
+    const IS_NOT_VERIFIED_EMAIL = 0;
+    const IS_VERIFIED_EMAIL = 1;
+
+    const ACTION_TYPE_DELETE = 0;
+    const ACTION_TYPE_RESTORE = 1;
+
+    const ERROR_LOGIC = 'Logic';
+    const ERROR_SYSTEM = 'Try catch';
 }

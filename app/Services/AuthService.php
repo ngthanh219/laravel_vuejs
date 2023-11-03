@@ -44,7 +44,7 @@ class AuthService extends BaseService
                 'user' => $user
             ]);
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
             return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }
@@ -58,7 +58,7 @@ class AuthService extends BaseService
 
             return $this->responseSuccess();
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
             return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }
@@ -92,7 +92,7 @@ class AuthService extends BaseService
 
             return $this->responseSuccess();
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
             return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }
@@ -130,7 +130,7 @@ class AuthService extends BaseService
 
             return $this->responseSuccess();
         } catch (\Exception $ex) {
-            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, 'Try catch', $ex->getMessage());
+            GeneralHelper::detachException(__CLASS__ . '::' . __FUNCTION__, Constant::ERROR_SYSTEM, $ex->getMessage());
 
             return $this->responseError(__('messages.system.server_error'), HttpStatus::INTERNAL_SERVER_ERROR, ErrorCode::SERVER_ERROR);
         }

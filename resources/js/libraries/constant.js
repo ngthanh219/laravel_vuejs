@@ -1,4 +1,5 @@
 const constant = {
+    NO_DATA: 0,
     PAGINATION: {
         LIMIT: 15,
         PAGE: 1
@@ -29,6 +30,10 @@ const constant = {
             NOT_LOGGED: 0,
             LOGGED: 1,
             ALL: 2
+        },
+        IS_VERIFIED_EMAIL: {
+            NO: 0,
+            YES: 1,
         },
         ACTION_TYPE: {
             DELETE: 0,

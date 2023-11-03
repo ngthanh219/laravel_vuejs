@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Libraries\Constant;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,10 +28,18 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
-        'email_verified_at',
         'deleted_at',
         'updated_at'
     ];
+
+    public function getEmailVerifiedAtAttribute($value)
+    {
+        if ($value != null) {
+            return Constant::IS_VERIFIED_EMAIL;
+        }
+
+        return Constant::IS_NOT_VERIFIED_EMAIL;
+    }
 
     public function getCreatedAtAttribute($value)
     {

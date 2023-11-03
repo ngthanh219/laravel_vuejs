@@ -158,6 +158,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'action_type' => 'action type',
+        'id_array' => 'list id'
+    ],
 
 ];

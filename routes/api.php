@@ -20,6 +20,7 @@ Route::group([
             'middleware' => 'admin.auth'
         ], function () {
             Route::resource('users', UserController::class);
+            Route::post('users/action-multi-data', [UserController::class, 'actionMultiData']);
 
             Route::post('logout', [AuthController::class, 'logout']);
         });

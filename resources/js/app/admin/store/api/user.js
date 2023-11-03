@@ -17,6 +17,10 @@ let user = {
     delete({state}, form) {
         return api.handle({state}, 'delete', prefix, form);
     },
+
+    actionMultiData({state}, form) {
+        return api.handle({state}, 'post', prefix + '/action-multi-data', form);
+    },
 }
 
 export default user;

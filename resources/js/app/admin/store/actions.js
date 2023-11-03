@@ -9,6 +9,7 @@ let actions = {
     createUser: user.create,
     updateUser: user.update,
     deleteUser: user.delete,
+    actionMultiUser: user.actionMultiData
 }
 
 export default actions;
