@@ -7,6 +7,10 @@ const messages = {
         'vi': 'Đã có lỗi xảy ra. Vui lòng thử lại!',
         'en': 'An error has occurred!'
     },
+    'action_not_executed': {
+        'vi': 'Hành động này không nên được thực thi',
+        'en': 'This action should not be executed!'
+    },
     'create_success': {
         'vi': 'Tạo mới thành công!',
         'en': 'Created successfully!'

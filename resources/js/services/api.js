@@ -14,6 +14,12 @@ let api = {
     },
 
     async call(actionName, form, success = null, error = null) {
+        if (typeof form.error === 'undefined') {
+            form.error = {
+                message: ''
+            };
+        }
+
         await this.store.dispatch(actionName, form)
         .then(res => {
             if (typeof success == 'function') {

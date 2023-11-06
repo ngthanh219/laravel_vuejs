@@ -1,8 +1,13 @@
 <template>
-    <div class="content-wrapper page-component">
+    <div
+        class="page-component" 
+        v-bind:class="[
+            isPopup ? 'modal-list' : 'content-wrapper'
+        ]"
+    >
         <div class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row mb-2" v-if="!isPopup">
                     <div class="col-sm-6">
                         <a class="btn btn-primary" @click="openForm">
                             <i class="id-icon fas fa-plus mr-2"></i>{{ $helpers.lang.get('button.create') }}
@@ -36,7 +41,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" v-else>
+                <div class="row" v-if="!isPopup && action.array.length > 0">
                     <div class="form-group input-group-sm wmc b ml-2 mr-2" v-if="query.is_deleted == $constant.IS_DELETE.NO">
                         <div class="input-group-sm mr-2">
                             <span>{{ $helpers.lang.get('page.user.action.delete') }}</span>
@@ -61,9 +66,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-
                             <TablePagination
                                 v-if="dataList"
+                                :isPopup="isPopup"
                                 :dataList="dataList"
                                 :query="query"
                                 :getData="getData"
@@ -73,7 +78,7 @@
                                 <table class="table table-hover table-head-fixed text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th>
+                                            <th v-if="!isPopup">
                                                 <div class="custom-checkbox" @click="checkBox">
                                                     <input type="checkbox" :checked="isCheckAll">
                                                 </div>
@@ -95,12 +100,12 @@
                                             <th style="width: 250px">{{ $helpers.lang.get('page.user.email') }}</th>
                                             <th style="width: 250px">{{ $helpers.lang.get('page.user.login_status') }}</th>
                                             <th style="width: 250px">{{ $helpers.lang.get('page.table.created_at') }}</th>
-                                            <th style="width: 100px"></th>
+                                            <th style="width: 100px" v-if="!isPopup"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-data" v-if="dataList && dataList.list.length > $constant.NO_DATA">
                                         <tr v-for="data, index in dataList.list">
-                                            <td>
+                                            <td v-if="!isPopup">
                                                 <div class="custom-checkbox" @click="checkBox($event, data.id)">
                                                     <input type="checkbox" :checked="isCheckAll || action.array.includes(data.id)">
                                                 </div>
@@ -131,7 +136,7 @@
                                                 </span>
                                             </td>
                                             <td>{{ data.created_at }}</td>
-                                            <td>
+                                            <td v-if="!isPopup">
                                                 <div class="table-action">
                                                     <div class="action-btn">
                                                         <div>
@@ -153,13 +158,7 @@
                                                                     ?
                                                                         false
                                                                     :
-                                                                        (
-                                                                            $helpers.store.getAuth().user.id == data.id
-                                                                            ?
-                                                                                true
-                                                                            :
-                                                                                false
-                                                                        )
+                                                                        ($helpers.store.getAuth().user.id == data.id ? true : false)
                                                                 )
                                                             }"
                                                             @click="deleteData($event, data.id)"
@@ -191,11 +190,19 @@
         </section>
 
         <UserPopup
-            v-if="isForm"
+            v-if="!isPopup && isForm"
 
             :data="data"
             :closeForm="closeForm"
             :getData="getData"
+        />
+
+        <ConfirmDialog
+            v-if="!isPopup && confirmDialogContent.isShow"
+
+            :closeDialog="closeConfirmDialog"
+            :confirmDialog="confirmDialog"
+            :message="confirmDialogContent.message"
         />
     </div>
 </template>
@@ -206,17 +213,26 @@
     const ACTION_MULTI_DATA = 'actionMultiUser';
 
     import TablePagination from '../../commons/pagination/TablePagination.vue';
+    import ConfirmDialog from '../../commons/dialog/ConfirmDialog.vue';
     import UserPopup from './Popup.vue';
 
     export default {
         name: "UserList",
+        props: {
+            isPopupList: Boolean
+        },
         components: {
             TablePagination,
+            ConfirmDialog,
             UserPopup
         },
         data() {
             return {
+                isPopup: false,
                 dataList: null,
+                data: null,
+                isForm: false,
+                isCheckAll: false,
                 query: {
                     limit: this.$constant.PAGINATION.LIMIT,
                     page: this.$constant.PAGINATION.PAGE,
@@ -228,9 +244,12 @@
                 formDataError: {
                     message: ""
                 },
-                isForm: false,
-                data: null,
-                isCheckAll: false,
+                confirmDialogContent: {
+                    functionName: '',
+                    isShow: false,
+                    message: '',
+                    data: null
+                },
                 action: {
                     type: this.$constant.USER.ACTION_TYPE.DELETE,
                     array: []
@@ -238,7 +257,15 @@
             };
         },
         mounted() {
-            this.$helpers.router.getCurrentQuery(this.query);
+            if (typeof (this.isPopupList) !== 'undefined') {
+                if (this.isPopupList) {
+                    this.isPopup = true;
+                }
+            }
+
+            if (!this.isPopup) {
+                this.$helpers.router.getCurrentQuery(this.query);
+            }
 
             this.getData();
         },
@@ -258,6 +285,50 @@
                 this.$helpers.store.setPageLoading(false);
             },
 
+            async confirmDeleteData() {
+                var id = this.confirmDialogContent.data;
+                var successMessage = this.$helpers.lang.get('messages.delete_success');
+                if (this.query.is_deleted == this.$constant.IS_DELETE.YES) {
+                    successMessage = this.$helpers.lang.get('messages.restore_success');
+                }
+
+                this.$helpers.store.setPageLoading(true);
+                await this.$services.api.call(ACTION_DELETE, {
+                    id: id,
+                    error: this.formDataError
+                }, (data) => {
+                    this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SUCCESS, successMessage);
+                    this.getData();
+                }, (err) => {
+                    this.$helpers.store.setPageLoading(false);
+                });
+
+                this.closeConfirmDialog();
+            },
+
+            async confirmActionMultiData() {
+                this.action.type = this.confirmDialogContent.data;
+                var successMessage = this.$helpers.lang.get('messages.delete_success');
+                if (this.query.is_deleted == this.$constant.IS_DELETE.YES) {
+                    successMessage = this.$helpers.lang.get('messages.restore_success');
+                }
+
+                this.$helpers.store.setPageLoading(true);
+                await this.$services.api.call(ACTION_MULTI_DATA, {
+                    request: {
+                        action_type: this.action.type,
+                        id_array: JSON.stringify(this.action.array)
+                    }
+                }, (data) => {
+                    this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SUCCESS, successMessage);
+                    this.getData();
+                }, (err) => {
+                    this.$helpers.store.setPageLoading(false);
+                });
+
+                this.closeConfirmDialog();
+            },
+
             clearParams() {
                 this.isCheckAll = false;
                 this.action.array = [];
@@ -266,7 +337,10 @@
             filter(e) {
                 e.preventDefault();
 
-                this.$helpers.router.pushQueryUrl(this.query);
+                if (!this.isPopup) {
+                    this.$helpers.router.pushQueryUrl(this.query);
+                }
+
                 this.$helpers.setQueryPage(this.query, this.dataList);
                 this.getData();
             },
@@ -275,7 +349,10 @@
                 e.preventDefault();
 
                 this.$helpers.setQuerySort(this.query, queryParam);
-                this.$helpers.router.pushQueryUrl(this.query);
+                if (!this.isPopup) {
+                    this.$helpers.router.pushQueryUrl(this.query);
+                }
+
                 this.getData();
             },
 
@@ -299,33 +376,6 @@
                 this.isForm = false;
             },
 
-            async deleteData(e, id) {
-                e.preventDefault();
-
-                if (this.$store.state.auth.user.id != id) {
-                    var alertMessage = this.$helpers.lang.get('messages.delete_action');
-                    var successMessage = this.$helpers.lang.get('messages.delete_success');
-
-                    if (this.query.is_deleted == this.$constant.IS_DELETE.YES) {
-                        alertMessage = this.$helpers.lang.get('messages.restore_action');
-                        successMessage = this.$helpers.lang.get('messages.restore_success');
-                    }
-
-                    if (confirm(alertMessage)) {
-                        this.$helpers.store.setPageLoading(true);
-                        let form = {
-                            id: id,
-                            error: this.formDataError
-                        }
-
-                        await this.$services.api.call(ACTION_DELETE, form);
-                        this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SHOW, successMessage);
-
-                        this.getData();
-                    }
-                }
-            },
-
             checkBox(e, id = null) {
                 if (id == null) {
                     this.isCheckAll = this.isCheckAll ? false : true;
@@ -346,23 +396,61 @@
                 }
             },
 
-            async actionMultiData(e, type) {
+            handleConfirmDialog(functionName, isShow, message, data) {
+                this.confirmDialogContent.function = functionName;
+                this.confirmDialogContent.isShow = isShow;
+                this.confirmDialogContent.message = message;
+                this.confirmDialogContent.data = data;
+            },
+
+            closeConfirmDialog() {
+                this.handleConfirmDialog('', false, '', null);
+            },
+
+            confirmDialog() {
+                switch(this.confirmDialogContent.function) {
+                    case 'confirmDeleteData': {
+                        return this.confirmDeleteData();
+                        break;
+                    }
+                    
+                    case 'confirmActionMultiData': {
+                        return this.confirmActionMultiData();
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            },
+
+            deleteData(e, id) {
+                e.preventDefault();
+                
+                if (this.$store.state.auth.user.id != id) {
+                    var message = this.$helpers.lang.get('messages.delete_action');
+                    if (this.query.is_deleted == this.$constant.IS_DELETE.YES) {
+                        message = this.$helpers.lang.get('messages.restore_action');
+                    }
+
+                    this.handleConfirmDialog('confirmDeleteData', true, message, id);
+                }
+            },
+
+            actionMultiData(e, type) {
                 e.preventDefault();
 
                 if (this.action.array.length > this.$constant.NO_DATA) {
-                    this.action.type = type;
-                    let form = {
-                        request: {
-                            action_type: type,
-                            id_array: JSON.stringify(this.action.array)
-                        }
-                    };
+                    var message = this.$helpers.lang.get('messages.delete_action');
+                    if (this.query.is_deleted == this.$constant.IS_DELETE.YES) {
+                        message = this.$helpers.lang.get('messages.restore_action');
+                    }
 
-                    this.$helpers.store.setPageLoading(true);
-                    await this.$services.api.call(ACTION_MULTI_DATA, form);
-                    this.getData();
+                    this.handleConfirmDialog('confirmActionMultiData', true, message, type);
+                } else {
+                    this.$helpers.store.setNotification(this.$constant.NOTIFICATION.FAIL, this.$helpers.lang.get('messages.action_not_executed'));
                 }
-            }
+            },
         }
     }
 </script>

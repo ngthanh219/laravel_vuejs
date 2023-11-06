@@ -28,6 +28,7 @@ return [
         "email_exist" => "This email was used by other user",
         "phone_exist" => "This phone was used by other user",
         "expired_verification_code" => "Verification code has expired",
+        "not_delete_logged_user" => "You can not delete an account currently logged in on this system!"
     ],
     "id_array" => [
         "invalid" => "List id is invalid",

@@ -171,7 +171,7 @@
 
                 await this.$services.api.call("createUser", form, (data) => {
                     transaction = true;
-                    this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SHOW, this.$helpers.lang.get('messages.create_success'));
+                    this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SUCCESS, this.$helpers.lang.get('messages.create_success'));
                 });
 
                 return transaction;
@@ -188,7 +188,7 @@
                     this.formData.is_change_password = this.$constant.USER.IS_CHANGE_PASSWORD.NO;
                     this.formData.password = this.$constant.USER.DEFAULT_PASSWORD;
                     this.$helpers.mergeArrayData(this.formData, this.data);
-                    this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SHOW, this.$helpers.lang.get('messages.update_success'));
+                    this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SUCCESS, this.$helpers.lang.get('messages.update_success'));
                 });
             }
         }

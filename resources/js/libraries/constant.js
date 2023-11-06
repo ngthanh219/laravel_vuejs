@@ -13,8 +13,8 @@ const constant = {
         YES: 1
     },
     NOTIFICATION: {
-        HIDDEN: 0,
-        SHOW: 1
+        FAIL: 0,
+        SUCCESS: 1
     },
     USER: {
         ROLE: {

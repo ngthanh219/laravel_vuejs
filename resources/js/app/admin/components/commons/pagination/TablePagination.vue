@@ -8,7 +8,7 @@
             }} {{ this.$helpers.lang.get('page.pagination.data') }}
         </h3>
         <div class="card-tools row">
-            <div class="input-group input-group-sm data-filter deleted">
+            <div class="input-group input-group-sm data-filter deleted" v-if="!isPopup">
                 <div class="label">{{ this.$helpers.lang.get('page.pagination.data_type') }}: </div>
                 <select class="form-control" v-model="query.is_deleted" @change="trashedFilter">
                     <option value="0">{{ this.$helpers.lang.get('page.pagination.data_type.available') }}</option>
@@ -70,6 +70,7 @@
     export default {
         name: 'TablePagination',
         props: {
+            isPopup: Boolean,
             dataList: Object,
             query: Object,
             getData: Function
@@ -105,7 +106,11 @@
 
             filterDataTable() {
                 this.$helpers.setQueryPage(this.query, this.dataList);
-                this.$helpers.router.pushQueryUrl(this.query);
+
+                if (!this.isPopup) {
+                    this.$helpers.router.pushQueryUrl(this.query);
+                }
+
                 this.getData();
             },
 

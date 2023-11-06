@@ -152,8 +152,12 @@ class UserService extends BaseService
     public function destroy($request, $id)
     {
         try {
+            $loggedUser = auth()->guard('api')->user();
+            if ($loggedUser->id == $id) {
+                return $this->responseError(__('messages.user.not_delete_logged_user'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
+            }
+
             $user = $this->user->find($id);
-            
             if (!$user) {
                 $user = $this->user->withTrashed()->where('id', $id)->first();
 
@@ -184,9 +188,14 @@ class UserService extends BaseService
                 return $this->responseError(__('messages.id_array.invalid'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
             }
 
+            $loggedUser = auth()->guard('api')->user();
             foreach ($idArray as $id) {
                 if (!is_int($id)) {
                     return $this->responseError(__('messages.id_array.item_not_int'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
+                } else {
+                    if ($loggedUser->id == $id) {
+                        return $this->responseError(__('messages.user.not_delete_logged_user'), HttpStatus::BAD_REQUEST, ErrorCode::PARAM_INVALID);
+                    }
                 }
             }
 

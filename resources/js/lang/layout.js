@@ -1,4 +1,4 @@
-const page = {
+const layout = {
     'menu': {
         'title': {
             'vi': 'Quản trị hệ thống',
@@ -29,4 +29,4 @@ const page = {
     },
 }
 
-export default page;
+export default layout;

@@ -28,6 +28,7 @@ return [
         "email_exist" => "Email này đã được sử dụng",
         "phone_exist" => "Số điện thoại này đã được sử dụng",
         "expired_verification_code" => "Mã xác thực đã hết hạn",
+        "not_delete_logged_user" => "Bạn không thể xóa tài khoản đang được đăng nhập trên hệ thống này!"
     ],
     "id_array" => [
         "invalid" => "Danh sách id không phải mảng",

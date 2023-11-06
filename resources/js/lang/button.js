@@ -1,4 +1,4 @@
-const layout = {
+const button = {
     'create': {
         'vi': 'Thêm mới',
         'en': 'Create new data'
@@ -30,7 +30,11 @@ const layout = {
     'login': {
         'vi': 'Đăng nhập',
         'en': 'Login'
+    },
+    'confirm': {
+        'vi': 'Xác nhận',
+        'en': 'Ok'
     }
 }
 
-export default layout;
+export default button;

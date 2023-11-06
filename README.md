@@ -71,10 +71,10 @@ php artisan serve
 9. Start npm
 - Development
 ```sh
-npm run watch
+npm run dev
 ```
 
 - Production
 ```sh
-npm run dev
+npm run build
 ```
