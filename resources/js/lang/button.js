@@ -34,6 +34,10 @@ const button = {
     'confirm': {
         'vi': 'Xác nhận',
         'en': 'Ok'
+    },
+    'Back': {
+        'vi': 'Quay lại',
+        'en': 'Back'
     }
 }
 

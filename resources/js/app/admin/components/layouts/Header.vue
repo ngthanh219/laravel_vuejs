@@ -59,22 +59,14 @@
                 e.preventDefault();
 
                 this.$helpers.store.setPageLoading(true);
-                await this.$store.dispatch('logout', {
-                    error: {
-                        message: ''
-                    }
-                })
-                .then(res => {
+                await this.$services.api.call('logout', {}, (data) => {
                     this.$helpers.store.setAuth({
                         user: null,
                         access_token: null
                     });
-                })
-                .catch(err => {
-                    
                 });
+
                 this.$helpers.store.setPageLoading(false);
-                
                 this.$router.push({path: '/admin/login' });
             }
         }

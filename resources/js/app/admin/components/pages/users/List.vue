@@ -6,6 +6,9 @@
         ]"
     >
         <div class="content-header">
+            <div class="form-group input-group-sm" v-if="isPopup">
+                <a class="btn btn-sm btn-primary cursor-pointer" @click="closePopup">{{ $helpers.lang.get('button.back') }}</a>
+            </div>
             <div class="container-fluid">
                 <div class="row mb-2" v-if="!isPopup">
                     <div class="col-sm-6">
@@ -79,10 +82,11 @@
                                     <thead>
                                         <tr>
                                             <th v-if="!isPopup">
-                                                <div class="custom-checkbox" @click="checkBox">
-                                                    <input type="checkbox" :checked="isCheckAll">
+                                                <div class="custom-checkbox">
+                                                    <input type="checkbox" :checked="isCheckAll" @click="checkBox">
                                                 </div>
                                             </th>
+                                            <th v-else style="width: 25px">{{ $helpers.lang.get('page.table.option') }}</th>
                                             <th style="width: 25px">
                                                 <a href="/" @click="sortData($event, 'id_sort')">
                                                     ID
@@ -106,9 +110,16 @@
                                     <tbody class="table-data" v-if="dataList && dataList.list.length > $constant.NO_DATA">
                                         <tr v-for="data, index in dataList.list">
                                             <td v-if="!isPopup">
-                                                <div class="custom-checkbox" @click="checkBox($event, data.id)">
-                                                    <input type="checkbox" :checked="isCheckAll || action.array.includes(data.id)">
+                                                <div class="custom-checkbox">
+                                                    <input type="checkbox" :checked="isCheckAll || action.array.includes(data.id)" @click="checkBox($event, data.id)">
                                                 </div>
+                                            </td>
+                                            <td v-else>
+                                                <a class="btn btn-sm btn-danger" v-if="data.id == dataId">{{ $helpers.lang.get('page.table.option.selecting') }}</a>
+                                                <a class="btn btn-sm btn-outline-primary" @click="selectDataPopup($event, {
+                                                    id: data.id,
+                                                    name: data.email
+                                                })" v-else>{{ $helpers.lang.get('page.table.option.select') }}</a>
                                             </td>
                                             <td>{{ data.id }}</td>
                                             <td>{{ $helpers.lang.get('page.user.role.' + (data.role_id == $constant.USER.ROLE.ADMIN ? 'admin' : 'user')) }}</td>
@@ -208,6 +219,7 @@
 </template>
 
 <script>
+    const COMPONENT_NAME = 'UserList';
     const ACTION_GET = 'getUsers';
     const ACTION_DELETE = 'deleteUser';
     const ACTION_MULTI_DATA = 'actionMultiUser';
@@ -217,9 +229,12 @@
     import UserPopup from './Popup.vue';
 
     export default {
-        name: "UserList",
+        name: COMPONENT_NAME,
         props: {
-            isPopupList: Boolean
+            isPopupList: Boolean,
+            dataId: Number,
+            closePopupList: Function,
+            setPopupData: Function
         },
         components: {
             TablePagination,
@@ -413,7 +428,7 @@
                         return this.confirmDeleteData();
                         break;
                     }
-                    
+
                     case 'confirmActionMultiData': {
                         return this.confirmActionMultiData();
                         break;
@@ -426,7 +441,7 @@
 
             deleteData(e, id) {
                 e.preventDefault();
-                
+
                 if (this.$store.state.auth.user.id != id) {
                     var message = this.$helpers.lang.get('messages.delete_action');
                     if (this.query.is_deleted == this.$constant.IS_DELETE.YES) {
@@ -451,6 +466,16 @@
                     this.$helpers.store.setNotification(this.$constant.NOTIFICATION.FAIL, this.$helpers.lang.get('messages.action_not_executed'));
                 }
             },
+
+            selectDataPopup(e, data) {
+                e.preventDefault();
+
+                this.setPopupData(data);
+            },
+
+            closePopup(e) {
+                this.closePopupList(COMPONENT_NAME);
+            }
         }
     }
 </script>

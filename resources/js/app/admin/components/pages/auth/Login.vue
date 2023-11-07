@@ -48,7 +48,7 @@
     import BtnLoading from '../../commons/loading/BtnLoading.vue';
 
     export default {
-        name: 'User',
+        name: 'Login',
         components: {
             BtnLoading
         },
@@ -79,16 +79,12 @@
 
                 this.isLoginClick = true;
                 if (this.isLoginClick) {
-                    await this.$store.dispatch('login', {
+                    await this.$services.api.call('login', {
                         request: this.formData,
                         error: this.formDataError
-                    })
-                    .then(res => {
-                        this.$helpers.store.setAuth(res.data);
+                    }, (data) => {
+                        this.$helpers.store.setAuth(data);
                         this.$helpers.router.redirectAdmin('users');
-                    })
-                    .catch(err => {
-                        
                     });
 
                     this.isLoginClick = false;

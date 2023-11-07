@@ -37,6 +37,18 @@ const page = {
         'no_data': {
             'vi': 'Không có dữ liệu',
             'en': 'No data'
+        },
+        'option': {
+            'vi': 'Tùy chọn',
+            'en': 'Option',
+            'selecting': {
+                'vi': 'Đang chọn',
+                'en': 'Selecting'
+            },
+            'select': {
+                'vi': 'Chọn',
+                'en': 'Select'
+            }
         }
     },
     'form': {

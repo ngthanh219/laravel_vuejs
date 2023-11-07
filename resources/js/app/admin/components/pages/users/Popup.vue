@@ -78,8 +78,12 @@
 </template>
 
 <script>
+    const COMPONENT_NAME = 'UserPopup';
+    const ACTION_CREATE = 'createUser';
+    const ACTION_UPDATE = 'updateUser';
+
     export default {
-        name: "UserPopup",
+        name: COMPONENT_NAME,
         props: {
             data: Object,
             closeForm: Function,
@@ -126,23 +130,11 @@
             }, 200);
         },
         methods: {
-            closeFormComponent(e) {
-                e.preventDefault();
-
-                this.isTransitionActive = false;
-                setTimeout(() => {
-                    this.closeForm(e);
-                }, 400);
-            },
-
             async handleData(e) {
                 e.preventDefault();
 
                 if (this.data) {
-                    if (
-                        this.$helpers.checkChangeFormData(this.data, this.formData) ||
-                        this.formData.is_change_password == this.$constant.USER.IS_CHANGE_PASSWORD.YES
-                    ) {
+                    if (this.checkChangeFormData()) {
                         this.$helpers.store.setPageLoading(true);
                         await this.update();
                         this.$helpers.store.setPageLoading(false);
@@ -164,12 +156,11 @@
 
             async create() {                
                 var transaction = false;
-                let form = {
+
+                await this.$services.api.call(ACTION_CREATE, {
                     request: this.formData,
                     error: this.formDataError
-                };
-
-                await this.$services.api.call("createUser", form, (data) => {
+                }, (data) => {
                     transaction = true;
                     this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SUCCESS, this.$helpers.lang.get('messages.create_success'));
                 });
@@ -178,18 +169,36 @@
             },
 
             async update() {
-                let form = {
+                await this.$services.api.call(ACTION_UPDATE, {
                     id: this.data.id,
                     request: this.formData,
                     error: this.formDataError
-                };
-
-                await this.$services.api.call("updateUser", form, (data) => {
-                    this.formData.is_change_password = this.$constant.USER.IS_CHANGE_PASSWORD.NO;
-                    this.formData.password = this.$constant.USER.DEFAULT_PASSWORD;
+                }, (data) => {
+                    this.handleDataAfterUpdate();
                     this.$helpers.mergeArrayData(this.formData, this.data);
                     this.$helpers.store.setNotification(this.$constant.NOTIFICATION.SUCCESS, this.$helpers.lang.get('messages.update_success'));
                 });
+            },
+
+            closeFormComponent(e) {
+                e.preventDefault();
+
+                this.isTransitionActive = false;
+                setTimeout(() => {
+                    this.closeForm(e);
+                }, 400);
+            },
+
+            checkChangeFormData() {
+                return (
+                    this.$helpers.checkChangeFormData(this.data, this.formData) ||
+                    this.formData.is_change_password == this.$constant.USER.IS_CHANGE_PASSWORD.YES
+                );
+            },
+
+            handleDataAfterUpdate() {
+                this.formData.is_change_password = this.$constant.USER.IS_CHANGE_PASSWORD.NO;
+                this.formData.password = this.$constant.USER.DEFAULT_PASSWORD;
             }
         }
     }
